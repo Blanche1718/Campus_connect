@@ -24,13 +24,27 @@ class AnnonceRequest extends FormRequest
         return [
             'titre'=> ['required' , 'string'] , 
             'contenu'=>['required'] , 
-            'categorie_id' =>['required'] , 
-            'auteur_id'=>'nullable' , // A modifier après
+            'categorie_id' =>'required|exists:categories,id', 
+            'auteur_id'=>'nullable|exists:users,id' , // A modifier après
             'date_publication'=>'nullable' ,
-            'date_evenement'=>'nullable' ,
-            'salle_id'=>'nullable' ,
-            'equipement_id'=>'nullable' ,
+            'date_evenement'=>'nullable|after_or_equal:today' , 
+            'salle_id'=>'nullable|exists:salles,id' ,
+            'equipement_id'=>'nullable|exists:equipements,id ' ,
 
         ];
+    }
+
+    public function messages()
+    {
+        return [
+            'titre.required'=>'Veuillez renseigner ce champ !' ,
+            'contenu.required' => "Veuillez renseigner ce champ !" , 
+            'categorie_id.required'=> "Vous  devez faire une sélection !" ,
+            'categorie_id.exists'=>"Categorie inexistante !" ,
+            'date_evenement.after_or_equal'=>"La date d'évenement ne peut être anterieure à la date d'aujourd'hui !" ,
+            'salle_id.exists'=>"Salle inexistante !" ,
+            'equipement_id.exists'=>"Equipement inexistant !" ,
+            ''
+            ] ;
     }
 }

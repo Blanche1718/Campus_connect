@@ -7,81 +7,130 @@
     <title>Creation d'annonce</title>
     <link rel="stylesheet" href="/Bootstrap_5/css/bootstrap.min.css">
     <link rel="stylesheet" href="/bootstrap-icons/font/bootstrap-icons.css">
+    
+    <style>
+        :root {
+            /* Couleurs principales pour un look moderne et doux */
+            --soft-blue: #dee2ff;
+            --soft-lavender: #f0e6ff;
+            --primary-color: #6c75f5; /* Bleu Lavande */
+            --text-color: #343a40;
+            --card-bg: #ffffff;
+            --shadow-light: 0 10px 20px rgba(108, 117, 245, 0.1);
+        }
+
+        body {
+            /* Fond doux et lumineux (Bleu/Lavande très pâle) */
+            background: linear-gradient(135deg, var(--soft-blue), var(--soft-lavender), #e9ecef);
+            color: var(--text-color);
+            min-height: 100vh;
+            padding-top: 50px; /* Espace pour le titre */
+        }
+
+        /* Style de la carte/Conteneur du formulaire (Soft UI) */
+        .modern-card {
+            background-color: var(--card-bg);
+            border-radius: 20px; /* Coins très arrondis */
+            box-shadow: var(--shadow-light); /* Ombre douce */
+            border: none; /* Supprime la bordure par défaut de Bootstrap */
+            padding: 30px !important; 
+        }
+
+        /* Amélioration de l'apparence des inputs/select */
+        .form-control, .form-select {
+            border-radius: 10px;
+            border-color: #ced4da;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(108, 117, 245, 0.25); /* Ombre concentrée autour du bleu primaire */
+        }
+        
+        /* Style des boutons pour plus d'attrait */
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            border-radius: 10px;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+        
+        .btn-primary:hover {
+            background-color: #5a63c0;
+            border-color: #5a63c0;
+        }
+        
+        .btn-outline-danger {
+            border-radius: 10px;
+            font-weight: 600;
+        }
+        
+    </style>
 </head>
 <body>
-    @if ($errors->any())
-    <div>
-        @foreach ($errors->all() as $error)
-            <p>{{ $error }}</p>
-        @endforeach
-    </div>
-    @endif
-    <form action="{{route('store')}}" method="POST" class="form-group ">
+
+    <form action="{{route('store')}}" method="POST" class="form-group d-flex flex-column align-items-center">
         @csrf
 
-        <!--Container principal du formulaire -->
-        <h1 class="text-center text-primary">Créer une annonce </h1>
-        <div class="container d-flex flex-column justify-content-center align-items center mb-5 card p-4  gap-3" style="max-width:60%">
+        <h1 class="text-center mb-4" style="color: var(--primary-color);">Créer une annonce 📝</h1>
+        <div class="container d-flex flex-column justify-content-center modern-card gap-3" style="max-width: 650px;">
             
-            <!--Titre -->
             <div>
-                <label for="titre">Titre</label>
-                <input type="text" name="titre" class="form-control" >
+                <label for="titre"><strong>Titre <span class="text-danger">*</span></strong> </label>
+                <input type="text" name="titre" class="form-control @error('titre') is-invalid @enderror " value="{{old ('titre') }}" placeholder="Ex: Examen de fin de semestre">
+                @error('titre') <div class="text-danger small">{{$message}}</div> @enderror
             </div>
 
-            <!--Contenu -->
             <div>
-                <label for="contenu">Contenu</label>
-                <textarea name="contenu" id="contenu" cols="30" rows="10" class="form-control"></textarea>
+                <label for="contenu"> <strong>Contenu<span class="text-danger">*</span></strong> </label>
+                <textarea name="contenu" id="contenu" cols="30" rows="6" class="form-control @error('contenu') is-invalid @enderror">{{old('contenu')}}</textarea>
+                @error('contenu') <div class="text-danger small">{{$message}}</div> @enderror
             </div>
 
-            <!--Categorie -->
             <div>
-                <label for="Categorie">Categorie</label>
-                <select name="categorie_id" id=""  class="form-control">
+                <label for="Categorie"><strong>Categorie <span class="text-danger">*</span></strong></label>
+                <select name="categorie_id" class="form-select @error('categorie_id') is-invalid @enderror">
                     <option value="">--Sélectionnez une categorie--</option>
                     @foreach ($categories as $categorie)
                         <option value="{{$categorie->id}}">{{$categorie->nom}}</option>
                     @endforeach
                 </select>
-
+                @error('categorie_id') <div class="text-danger small">{{$message}}</div> @enderror
             </div>
 
-            <!--Date de l'evenement -->
             <div>
-                <label for="date_evenement">Date de l'évenement:</label>
-                <input type="date" name="date_evenement" class="form-control" >
+                <label for="date_evenement"><strong>Date de l'événement</strong></label>
+                <input type="date" name="date_evenement" value="{{old('date_evenement')}}" class="form-control @error('date_evenement') is-invalid @enderror" >
+                @error('date_evenement') <div class="text-danger small">{{$message}}</div> @enderror
             </div>
 
 
-            <!--Salle concernée -->
             <div>
-                <label for="Categorie">Sélectionnez une salle si concernée :</label>
-                <select name="categorie_id" id=""  class="form-control">
+                <label for="salle_id"><strong>Sélectionnez une salle si concernée</strong></label>
+                <select name="salle_id" class="form-select @error('salle_id') is-invalid @enderror">
                     <option value="">--Sélectionnez une salle--</option>
-                    @foreach ($categories as $categorie)
-                        <option value="{{$categorie->id}}">{{$categorie->nom}}</option>
+                    @foreach ($categories as $categorie) <option value="{{$categorie->id}}">{{$categorie->nom}}</option>
                     @endforeach
                 </select>
-
+                @error('salle_id') <div class="text-danger small">{{$message}}</div> @enderror
             </div>
 
 
-            <!--Equipements concernés -->
             <div>
-                <label for="Categorie">Sélectionnez les equipments concernés:</label>
-                <select name="categorie_id" id=""  class="form-control">
-                    <option value="">--Sélectionnez les equipements--</option>
-                    @foreach ($categories as $categorie)
-                        <option value="{{$categorie->id}}">{{$categorie->nom}}</option>
+                <label for="equipement_id"><strong>Sélectionnez les équipements concernés: </strong></label>
+                <select name="equipement_id" class="form-select @error('equipement_id') is-invalid @enderror">
+                    <option value="">--Sélectionnez les équipements--</option>
+                    @foreach ($categories as $categorie) <option value="{{$categorie->id}}" {{old('categorie_id')==$categorie->id ? 'selected':''}}>{{$categorie->nom}}</option>
                     @endforeach
                 </select>
-
+                @error('equipement_id') <div class="text-danger small">{{$message}}</div> @enderror
             </div>
 
-            <!--Bouton valider -->
-            <div class="">
-                <input type="submit" name="submit" class="form-control btn btn-outline-primary" value="Publier" >
+            <div class="d-flex gap-3 justify-content-end pt-3">
+                <a href="{{route('dashboard')}}" class="btn btn-outline-danger"> <i class="bi bi-x-circle"></i> Abandonner la publication</a>
+                <input type="submit" name="submit" class="btn btn-primary" value="Publier l'annonce" >
             </div>
         </div>
     </form>

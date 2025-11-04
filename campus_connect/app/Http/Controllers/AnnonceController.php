@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\AnnonceRequest;
 use App\Models\Annonce;
 use App\Models\Category;
+use Exception;
 use Illuminate\Http\Request;
 
 class AnnonceController extends Controller
@@ -26,7 +27,7 @@ class AnnonceController extends Controller
     **/
     public function store (AnnonceRequest $request) {
         
-        $annonce = new Annonce($request->validated()) ;
+        $annonce = new Annonce() ;
 
         $annonce->titre = $request->titre ;
         $annonce->contenu = $request->contenu ;
@@ -39,15 +40,29 @@ class AnnonceController extends Controller
        /* $annonce->salle_id = $request->salle_id ;
         $annonce->equipement_id = $request->equipement_id ;*/
 
-        $annonce->save();
+        try {
+            $annonce->save() ;
+            return redirect()->back()->with('succes' , "Votre annonce a bien été publiée !") ;
+        } catch (Exception $e) {
+            dd($e->getMessage()) ;
+            return redirect()->back()->withInput() ;//
+        }
+        
     }
 
     /**
-     * Methode pour afficher toutes les categories
+     * Methode pour afficher toutes les annonces
      */
     public function toutes_annonces (){
-        $annonces = Annonce::orderBy('created_at' , 'desc')->get ();
+        $annonces = Annonce::with('auteur')->orderBy('created_at' , 'desc')->get ();
         return view('Annonces.toutes_annonces' , compact('annonces') ) ; 
+    }
+
+     /**
+     * Methode pour afficher une annonce particulière
+     */
+    public function annonce_particuliere (Annonce $annonce) {
+        return view('Annonces.annonce_particuliere' , compact('annonce')) ;
     }
 }
 

@@ -21,13 +21,19 @@ Route::middleware('auth')->group(function () {
 
 Route::prefix('/annonces')->controller(AnnonceController::class)->group(function () {
     //Formulaire de création des annonces
-    Route::get ('/create_annonce' , 'create')->name('create_annonce') ;
-
+    Route::get ('/create_annonce' , 'create')->middleware('auth')->name('create_annonce') ;
+    
     //Sauvegarde de l'annonce
-    Route::post('/store' , 'store')->name('store') ;
+    Route::post('/store' , 'store')->middleware('auth')->name('store') ;
 
 
-    //Voir toutes les categories
-    Route::get('toutes_annonces' , 'toutes_annonces')->name('toutes_annonces');
+    //Voir toutes les annonces
+    Route::get('/toutes_annonces' , 'toutes_annonces')->name('toutes_annonces');
+
+    //Récuperation des categories pour en faire une liste de sélection dans la vue
+    Route::get('/toutes_categories' , 'create')->name('toutes_categorie') ;
+
+    //Voir ou lire une annonce en particulier
+    Route::get('/annonce/{annonce}' , 'annonce_particuliere')->name('annonce_particuliere') ;
 });
 require __DIR__.'/auth.php';

@@ -18,7 +18,11 @@ class Annonce extends Model
         'equipement_id'
     ];
 
-    public function user () {
-        return $this->belongsTo(User::class) ;
+    public function auteur () {
+        return $this->belongsTo(User::class , 'auteur_id') ;
+    }
+
+    public function categorie () {
+        return $this->belongsTo(Category::class) ;
     }
 }

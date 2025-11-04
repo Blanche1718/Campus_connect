@@ -1,15 +1,14 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Détails de l'Annonce</title>
-    
+    <title>Annonce</title>
     <link rel="stylesheet" href="/Bootstrap_5/css/bootstrap.min.css">
     <link rel="stylesheet" href="/bootstrap-icons/font/bootstrap-icons.css">
-    
-    <style>
+</head>
+<style>
         :root {
             --primary-color: #6c75f5; 
             --soft-blue: #dee2ff;
@@ -57,51 +56,36 @@
             line-height: 1.6;
         }
     </style>
-</head>
-<body> 
-   
+<body>
+   <div class="ad-card p-4 p-md-5">
 
-    <div class="d-flex flex-column gap-3">
-        @if(count($annonces) == 0) 
-            <div class="text-center">
-                <h2 style="font-family:cursive">
-                    Aucune annonce n'a été publiée pour le moment
-                </h2>
-            </div>
+        <h1 class="ad-title">{{$annonce->titre}}</h1>
         
-        @else
-        @foreach ($annonces as $annonce)
+        <div class="ad-meta-info mb-4 d-flex flex-wrap gap-4">
+            <span>
+                <i class="bi bi-calendar-check text-success me-2"></i>
+                Publié le {{$annonce->created_at}}
+            </span>
             
-    
-        <div class="ad-card p-4 p-md-5">
-
-            <h1 class="ad-title">{{$annonce->titre}}</h1>
-            
-            <div class="ad-meta-info mb-4 d-flex flex-wrap gap-4">
-                <span>
-                    <i class="bi bi-calendar-check text-success me-2"></i>
-                    <strong>Publiée le</strong> &nbsp; <span class="text-danger">{{$annonce->created_at->format('d/m/Y')}}</span> à  <span class="text-danger">{{$annonce->created_at->format('H:i')}}</span>
-                </span>
-                
-                <span>
-                    <i class="bi bi-person-circle text-primary me-2"></i>
-                    <strong style="color:green">Auteur</strong> : {{$annonce->auteur->name}}
-                </span>
-            </div>
-
-            <hr class="my-3">
-
-            <div class="ad-content">
-                <p class="text-center">
-                    {{Str::limit($annonce->contenu , 200)}} <br>
-                    <div class="justify-content-end"><a href="{{route('annonce_particuliere' , $annonce->id)}}" class="btn btn-light justify-content-end">Lire la  suite...</a></div>
-                </p>
-                <hr>
-            </div>
-        
+            <span>
+                <i class="bi bi-person-circle text-primary me-2"></i>
+                Auteur: {{$annonce->auteur->name}}
+            </span>
         </div>
-        @endforeach
-    @endif
-    </div>
+
+        <hr class="my-3">
+
+        <div class="ad-content">
+            <p class="text-center">
+                {{Str::limit($annonce->contenu , 200)}} <br>
+                <div class="justify-content-end"><a href="{{route('annonce_particuliere' , $annonce->id)}}" class="btn btn-light justify-content-end">Lire la  suite...</a></div>
+            </p>
+        </div>
+
+        <div class="mt-4 pt-3 border-top text-end">
+            <a href="{{url()->previous()}}" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-left"></i> Retour à la liste
+            </a>
+        </div>
 </body>
 </html>
