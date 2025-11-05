@@ -2,10 +2,12 @@
 
 use App\Http\Controllers\AnnonceController;
 use App\Http\Controllers\ProfileController;
+use App\Models\Annonce;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    $dernieres_annonces = Annonce::orderBy('created_at' , 'desc')->limit(5)->get();
+    return view('welcome' , compact('dernieres_annonces'));
 });
 
 Route::get('/dashboard', function () {

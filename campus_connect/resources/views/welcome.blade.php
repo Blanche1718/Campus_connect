@@ -95,7 +95,7 @@
     </button>
 
     <!-- Liens de navigation -->
-    <div class="collapse navbar-collapse bg-white" id="navbarNav">
+    <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="#">Accueil</a>
@@ -128,15 +128,16 @@
     <h4 class="mb-4">📢 Les dernières annonces</h4>
     <div class="row g-4">
 
+       
+
       <div class="col-md-3">
         <div class="card p-3">
-          <span class="badge bg-danger mb-2">Urgent</span>
-          <h6 class="fw-bold">Fermeture exceptionnelle - Bâtiment ALPHA</h6>
-          <p class="text-muted small">Dûe à des travaux de sécurité des étudiants.</p>
+          <span class="badge bg-danger mb-2">Faculté</span>
+          <h6 class="fw-bold">Dates d’inscription examens</h6>
+          <p class="text-muted small">Rentrée et reprise des cours annoncées.</p>
           <small class="text-secondary">Publié le 29 Oct 2025</small>
         </div>
       </div>
-
       <div class="col-md-3">
         <div class="card p-3">
           <span class="badge bg-success mb-2">Faculté</span>
