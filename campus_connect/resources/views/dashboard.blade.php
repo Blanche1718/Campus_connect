@@ -14,4 +14,6 @@
             </div>
         </div>
     </div>
+
+    <a href="{{route('edite' , 2)}}" class="btn btn-primary">Editer une annonce</a>
 </x-app-layout>

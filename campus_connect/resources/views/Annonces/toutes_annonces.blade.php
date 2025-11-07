@@ -80,7 +80,7 @@
             <div class="ad-meta-info mb-4 d-flex flex-wrap gap-4">
                 <span>
                     <i class="bi bi-calendar-check text-success me-2"></i>
-                    <strong>Publiée le</strong> &nbsp; <span class="text-danger">{{$annonce->created_at->format('d/m/Y')}}</span> à  <span class="text-danger">{{$annonce->created_at->format('H:i')}}</span>
+                    <strong>Publiée le</strong> &nbsp; <span class="text-danger">{{$annonce->updated_at->format('d/m/Y')}}</span> à  <span class="text-danger">{{$annonce->updated_at->format('H:i')}}</span>
                 </span>
                 
                 <span>

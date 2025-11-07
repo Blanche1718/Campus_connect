@@ -37,5 +37,11 @@ Route::prefix('/annonces')->controller(AnnonceController::class)->group(function
 
     //Voir ou lire une annonce en particulier
     Route::get('/annonce/{annonce}' , 'annonce_particuliere')->name('annonce_particuliere') ;
+
+     //Modification des annonces : Routes réservée aux admins et enseigants
+    Route::get('{annonce}/editeForm' , 'editForm')->name('edite') ;
+    Route::put('edite/{annonce}' , 'edite')->name('update') ;
+
+    
 });
 require __DIR__.'/auth.php';

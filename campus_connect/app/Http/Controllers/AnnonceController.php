@@ -54,7 +54,7 @@ class AnnonceController extends Controller
      * Methode pour afficher toutes les annonces
      */
     public function toutes_annonces (){
-        $annonces = Annonce::with('auteur')->orderBy('created_at' , 'desc')->get ();
+        $annonces = Annonce::with('auteur')->orderBy('updated_at' , 'desc')->get ();
         return view('Annonces.toutes_annonces' , compact('annonces') ) ; 
     }
 
@@ -63,6 +63,30 @@ class AnnonceController extends Controller
      */
     public function annonce_particuliere (Annonce $annonce) {
         return view('Annonces.annonce_particuliere' , compact('annonce')) ;
+    }
+
+    //Mise à jour d'annonce
+
+    public function editForm (Annonce $annonce) {
+        $categories = Category::all() ;
+        return view('Annonces.editer_annonce' , compact('annonce' ,'categories')) ;
+    }
+
+     public function edite (AnnonceRequest $request , Annonce $annonce) {
+        try {
+            $annonce->titre = $request->titre;
+        $annonce->contenu = $request->contenu;
+        $annonce->categorie_id = $request->categorie_id;
+        $annonce->auteur_id = auth()->user()->id;
+        $annonce->salle_id = $request->salle_id;
+        $annonce->equipement_id = $request->equipement_id;
+        $annonce->date_publication = now();
+        $annonce->date_evenement = $request->date_evenement;
+        $annonce->update() ;
+        return redirect()->route('dashboard') ;
+        } catch (Exception $e) {
+            return redirect()->route('edite')->withInput();
+        }
     }
 }
 
