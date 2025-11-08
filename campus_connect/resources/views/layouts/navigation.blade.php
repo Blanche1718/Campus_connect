@@ -15,6 +15,28 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                </div> 
+
+                <!-- Navigation Links annonce -->
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('create_annonce')" :active="request()->routeIs('create_annonce')">
+                        {{ __('Créer une annonce') }}
+                    </x-nav-link>
+                </div> 
+
+                 <!--Item de menu vers creation de salle-->
+
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('create_salle')" :active="request()->routeIs('create_salle')">
+                        {{ __('Créer une salle') }}
+                    </x-nav-link>
+                </div>
+
+                <!--Item de menu vers creation d'equipement-->
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('create_equipement')" :active="request()->routeIs('create_equipement')">
+                        {{ __('Créer un Matériel') }}
+                    </x-nav-link>
                 </div>
             </div>
 

@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\AnnonceController;
+use App\Http\Controllers\EquipementController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SalleController;
 use App\Models\Annonce;
 use Illuminate\Support\Facades\Route;
 
@@ -44,4 +46,26 @@ Route::prefix('/annonces')->controller(AnnonceController::class)->group(function
 
     
 });
+
+
+
+//Routes pour la gestion des salles
+Route::prefix('salles')->controller(SalleController::class)->group(function () {
+    //Creation de salles
+    Route::get('create_salle' , 'create')->name('create_salle') ;
+    Route::post('store' , 'store')->name('salle_store') ;
+
+    //Route Pour modifier les informations d'une salle
+    Route::get('editer_salle/{salle}' , 'edite_salle_form')->name('editer_salle') ;
+    Route::put('{salle}/Editer_salle' , 'edite_salle')->name('edite_salle'); 
+}) ;
+
+//Routes pour la gesttion des equipemens
+Route::prefix('equipements')->controller(EquipementController::class)->group(function (){
+    //Formulaire de creation d'equipements
+    Route::get('create_equipement' , 'create')->name('create_equipement') ;
+    Route::post('store' , 'store')->name('store_equipement') ;
+}) ;
+
+
 require __DIR__.'/auth.php';

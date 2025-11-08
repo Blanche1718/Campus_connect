@@ -129,7 +129,7 @@
             </div>
 
             <div class="d-flex gap-3 justify-content-end pt-3">
-                <a href="{{route('dashboard')}}" class="btn btn-outline-danger"> <i class="bi bi-x-circle"></i> Abandonner la publication</a>
+                <a href="{{route('dashboard')}}" class="btn btn-outline-danger"> <i class="bi bi-x-circle"></i> Abandonner la modification</a>
                 <input type="submit" name="submit" class="btn btn-primary" value="Publier l'annonce" >
             </div>
         </div>
