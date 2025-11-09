@@ -11,7 +11,6 @@ use App\Models\Salle;
 use App\Models\Equipement;
 use App\Http\Controllers\CategorieController;
 use App\Http\Controllers\SalleController;
-use App\Http\Controllers\EquipementController;
 
 Route::get('/', function () {
 
