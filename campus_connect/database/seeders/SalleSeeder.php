@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Seeder;
+use App\Models\Salle;
 
 class SalleSeeder extends Seeder
 {
@@ -13,28 +12,15 @@ class SalleSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('salles')->insert([
-            [
-                'nom' => 'B102',
-                'capacite' => 40,
-                'localisation' => 'Bâtiment B - 1er étage',
-                'description' => 'Salle équipée d’un vidéoprojecteur',
-                'disponibilite' => true,
-            ],
-            [
-                'nom' => 'Amphi A',
-                'capacite' => 120,
-                'localisation' => 'Bloc Principal',
-                'description' => 'Amphithéâtre principal',
-                'disponibilite' => true,
-            ],
-            [
-                'nom' => 'Laboratoire Info',
-                'capacite' => 30,
-                'localisation' => 'Bloc Informatique',
-                'description' => 'Salle avec ordinateurs et accès Internet',
-                'disponibilite' => false,
-            ],
-        ]);
+        $defaults = [
+            ['nom' => 'Amphi A', 'capacite' => 120, 'localisation' => 'Bâtiment central', 'description' => 'Amphithéâtre principal', 'disponibilite' => true],
+            ['nom' => 'Salle 101', 'capacite' => 30, 'localisation' => 'Bâtiment nord', 'description' => 'Salle de cours', 'disponibilite' => true],
+        ];
+
+        foreach ($defaults as $s) {
+            Salle::updateOrCreate(['nom' => $s['nom']], $s);
+        }
+
+        Salle::factory()->count(6)->create();
     }
 }

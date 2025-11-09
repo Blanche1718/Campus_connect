@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Seeder;
+use App\Models\Equipement;
 
 class EquipementSeeder extends Seeder
 {
@@ -13,28 +12,15 @@ class EquipementSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('equipements')->insert([
-            [
-                'nom' => 'Vidéoprojecteur 1',
-                'categorie' => 'Audio-visuel',
-                'etat' => 'disponible',
-                'description' => 'Vidéoprojecteur HD Epson',
-                'disponibilite' => true,
-            ],
-            [
-                'nom' => 'Ordinateur HP',
-                'categorie' => 'Informatique',
-                'etat' => 'en maintenance',
-                'description' => 'PC fixe HP ProDesk',
-                'disponibilite' => false,
-            ],
-            [
-                'nom' => 'Microphone Sans Fil',
-                'categorie' => 'Audio-visuel',
-                'etat' => 'disponible',
-                'description' => 'Micro sans fil avec récepteur',
-                'disponibilite' => true,
-            ],
-        ]);
+        $defaults = [
+            ['nom' => 'Projecteur', 'categorie' => 'Vidéo', 'etat' => 'disponible', 'description' => 'Projecteur HD', 'disponibilite' => true],
+            ['nom' => 'Microphone sans fil', 'categorie' => 'Audio', 'etat' => 'disponible', 'description' => 'Micro HF', 'disponibilite' => true],
+        ];
+
+        foreach ($defaults as $d) {
+            Equipement::updateOrCreate(['nom' => $d['nom']], $d);
+        }
+
+        Equipement::factory()->count(8)->create();
     }
 }

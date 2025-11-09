@@ -47,6 +47,7 @@
 
             </div>
 
+
             <!--Date de l'evenement -->
             <div>
                 <label for="date_evenement">Date de l'évenement:</label>

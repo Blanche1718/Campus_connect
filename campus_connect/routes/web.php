@@ -4,17 +4,34 @@ use App\Http\Controllers\AnnonceController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Annonce;
 use Illuminate\Support\Facades\Route;
+use App\Models\User;
+use App\Models\Category;
+use App\Models\Salle;
+use App\Models\Equipement;
+use App\Http\Controllers\CategorieController;
+use App\Http\Controllers\SalleController;
+use App\Http\Controllers\EquipementController;
 
 Route::get('/', function () {
     // On récupère les 4 dernières annonces avec leurs catégories et auteurs
     // 'with()' permet d'éviter les requêtes N+1 (très bonne pratique)
-    $annonces = Annonce::with('category', 'user')->latest()->take(4)->get();
+    $annonces = Annonce::with('categorie', 'user')->latest()->take(8)->get();
     return view('welcome', compact('annonces'));
 });
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+    $stats = [
+        'annonces' => Annonce::count(),
+        'users' => User::count(),
+        'categories' => Category::count(),
+        'salles' => Salle::count(),
+        'equipements' => Equipement::count(),
+    ];
+
+    $recentAnnonces = Annonce::with(['auteur','categorie'])->latest('date_publication')->take(8)->get();
+
+    return view('dashboard', compact('stats','recentAnnonces'));
+})->middleware(['auth'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -34,4 +51,12 @@ Route::prefix('annonces')->name('annonces.')->controller(AnnonceController::clas
         Route::post('/', 'store')->name('store');
     });
 });
+
+// Routes pour les Equipements
+Route::middleware(['auth'])->group(function () {
+    Route::resource('categories', CategorieController::class)->except(['show']);
+    Route::resource('salles', SalleController::class)->except(['show']);
+    Route::resource('equipements', EquipementController::class)->except(['show']);
+});
+
 require __DIR__.'/auth.php';
