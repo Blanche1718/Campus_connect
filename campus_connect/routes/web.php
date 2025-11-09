@@ -3,6 +3,7 @@
 use App\Http\Controllers\AnnonceController;
 use App\Http\Controllers\EquipementController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\SalleController;
 use App\Models\Annonce;
 use Illuminate\Support\Facades\Route;
@@ -34,10 +35,10 @@ Route::prefix('/annonces')->controller(AnnonceController::class)->group(function
     //Voir toutes les annonces
     Route::get('/toutes_annonces' , 'toutes_annonces')->name('toutes_annonces');
 
-    /*Récuperation des categories pour en faire une liste de sélection dans la vue
+    //Récuperation des categories pour en faire une liste de sélection dans la vue
     Route::get('/toutes_categories' , 'create')->name('toutes_categorie') ;
 
-    //Voir ou lire une annonce en particulier
+    /* //Voir ou lire une annonce en particulier
     Route::get('/annonce/{annonce}' , 'annonce_particuliere')->name('annonce_particuliere') ;
 
      //Modification des annonces : Routes réservée aux admins et enseigants
@@ -71,5 +72,11 @@ Route::prefix('equipements')->controller(EquipementController::class)->group(fun
     Route::put('editer_equipement_put/{equipement}' , 'editer_equipement_put')->name('editer_equipement_put') ;
 }) ;
 
+
+//Les réservations
+Route::prefix('Reservations')->controller(ReservationController::class)->group(function (){
+    Route::get('/create_reservation_form' , 'create')->name('create_reservation_form') ;
+    Route::post('store_reservation' , 'store')->name('store_reservation') ;
+}) ;
 
 require __DIR__.'/auth.php';
