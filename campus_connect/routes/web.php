@@ -34,7 +34,7 @@ Route::prefix('/annonces')->controller(AnnonceController::class)->group(function
     //Voir toutes les annonces
     Route::get('/toutes_annonces' , 'toutes_annonces')->name('toutes_annonces');
 
-    //Récuperation des categories pour en faire une liste de sélection dans la vue
+    /*Récuperation des categories pour en faire une liste de sélection dans la vue
     Route::get('/toutes_categories' , 'create')->name('toutes_categorie') ;
 
     //Voir ou lire une annonce en particulier
@@ -42,7 +42,7 @@ Route::prefix('/annonces')->controller(AnnonceController::class)->group(function
 
      //Modification des annonces : Routes réservée aux admins et enseigants
     Route::get('{annonce}/editeForm' , 'editForm')->name('edite') ;
-    Route::put('edite/{annonce}' , 'edite')->name('update') ;
+    Route::put('edite/{annonce}' , 'edite')->name('update') ; */
 
     
 });
