@@ -15,4 +15,12 @@ class Reservation extends Model
         'statut' ,
         'motif'
     ] ;
+
+    public function user () {
+        return $this->belongsTo(User::class);
+    }
+
+    /*public function salle (){
+        return $this->;
+    } */
 }

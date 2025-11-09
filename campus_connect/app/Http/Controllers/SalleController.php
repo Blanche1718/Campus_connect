@@ -1,59 +1,66 @@
 <?php
 
+
 namespace App\Http\Controllers;
 
-use App\Http\Requests\SalleRequest;
-use App\Models\Salle;
-use Exception;
 use Illuminate\Http\Request;
+use App\Models\Salle;
 
 class SalleController extends Controller
 {
-
-    //Formulaire de créatin de salle
-    public function create() {
-
-        return view('Salles.create_or_edite' , ['salle'=>null]) ;
+    public function index()
+    {
+        $salles = Salle::latest()->paginate(15);
+        return view('salles.index', compact('salles'));
     }
 
-    //Stockage de salle créée
-    public function store (SalleRequest $request) {
-        $salle = new Salle() ;
-        try {
-        $salle->nom = $request->nom ;
-        $salle->capacite = $request->capacite ;
-        $salle->localisation = $request->localisation ;
-        $salle->description = $request->descrption ;
-        $salle->disponibilite = $request->disponibilite ?? 1 ;
-
-        $salle->save() ;
-        return redirect()->route('dashboard') ;
-    } catch (Exception $e) {
-        
-            //Retour au formulaire en cas de non validation des données
-            return redirect()->back()->withInput();
-        }
+    public function create()
+    {
+        return view('salles.create');
     }
 
-    public function edite_salle_form( Salle $salle) {
+    public function store(Request $request)
+    {
+        $data = $request->validate([
+            'nom' => 'required|string|max:100',
+            'capacite' => 'nullable|integer',
+            'localisation' => 'nullable|string|max:255',
+            'description' => 'nullable|string',
+            'disponibilite' => 'sometimes|boolean',
+        ]);
 
-        return view('Salles.create_or_edite' , ['salle'=>$salle]) ;
+        $data['disponibilite'] = $request->has('disponibilite') ? (bool) $request->input('disponibilite') : true;
+
+        Salle::create($data);
+
+        return redirect()->route('salles.index')->with('success', 'Salle créée');
     }
 
-    public function edite_salle (SalleRequest $request , Salle $salle) {
-         try {
-        $salle->nom = $request->nom ;
-        $salle->capacite = $request->capacite ;
-        $salle->localisation = $request->localisation ;
-        $salle->description = $request->descrption ;
-        $salle->disponibilite = $request->disponibilite ?? 1 ;
+    public function edit(Salle $salle)
+    {
+        return view('salles.edit', compact('salle'));
+    }
 
-        $salle->update() ;
-        return redirect()->route('dashboard') ;
-    } catch (Exception $e) {
-        
-            //Retour au formulaire en cas de non validation des données
-            return redirect()->back()->withInput();
-        }
+    public function update(Request $request, Salle $salle)
+    {
+        $data = $request->validate([
+            'nom' => 'required|string|max:100',
+            'capacite' => 'nullable|integer',
+            'localisation' => 'nullable|string|max:255',
+            'description' => 'nullable|string',
+            'disponibilite' => 'sometimes|boolean',
+        ]);
+
+        $data['disponibilite'] = $request->has('disponibilite') ? (bool) $request->input('disponibilite') : $salle->disponibilite;
+
+        $salle->update($data);
+
+        return redirect()->route('salles.index')->with('success', 'Salle mise à jour');
+    }
+
+    public function destroy(Salle $salle)
+    {
+        $salle->delete();
+        return redirect()->route('salles.index')->with('success', 'Salle supprimée');
     }
 }

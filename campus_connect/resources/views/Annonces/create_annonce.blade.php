@@ -102,6 +102,8 @@
                 @error('categorie_id') <div class="text-danger small">{{$message}}</div> @enderror
             </div>
 
+
+            <!--Date de l'evenement -->
             <div>
                 <label for="date_evenement"><strong>Date de l'événement</strong></label>
                 <input type="date" name="date_evenement" value="{{old('date_evenement')}}" class="form-control @error('date_evenement') is-invalid @enderror" >

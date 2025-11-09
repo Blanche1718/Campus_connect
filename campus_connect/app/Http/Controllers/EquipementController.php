@@ -2,56 +2,64 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\EquipementRequest;
-use App\Models\Equipement;
-use Exception;
 use Illuminate\Http\Request;
+use App\Models\Equipement;
 
 class EquipementController extends Controller
 {
-     //Formulaire de créatin de salle
-    public function create() {
-        return view('Equipements.create_or_edite') ;
+    public function index()
+    {
+        $equipements = Equipement::latest()->paginate(15);
+        return view('equipements.index', compact('equipements'));
     }
 
-    //Stockage de salle créée
-    public function store (EquipementRequest $request) {
-        $equipement = new Equipement() ;
-        try {
-        $equipement->nom = $request->nom ;
-        $equipement->categorie = $request->categorie ;
-        $equipement->etat = $request->etat ;
-        $equipement->description = $request->descrption ;
-        $equipement->disponibilite = $request->disponibilite ?? 1 ;
-
-        $equipement->save() ;
-        return redirect()->route('dashboard')->with('success' , "Le matériel a bien été enregistré") ;
-    } catch (Exception $e) {
-        
-            //Retour au formulaire en cas de non validation des données
-            return redirect()->back()->withInput();
-        }
+    public function create()
+    {
+        return view('equipements.create');
     }
 
-    //Formulaire d'édition
-    public function editer_equipement_form (Equipement $equipement) {
-        return view('Equipements.create_or_edite' , ['equipement'=>$equipement]);
+    public function store(Request $request)
+    {
+        $data = $request->validate([
+            'nom' => 'required|string|max:150',
+            'categorie' => 'nullable|string|max:150',
+            'etat' => 'nullable|string|max:100',
+            'description' => 'nullable|string',
+            'disponibilite' => 'sometimes|boolean',
+        ]);
+
+        $data['disponibilite'] = $request->has('disponibilite') ? (bool) $request->input('disponibilite') : true;
+
+        Equipement::create($data);
+
+        return redirect()->route('equipements.index')->with('success', 'Équipement créé');
     }
 
-    //Mise à jour dans la base de donnéés
-    public function editer_equipement_put (EquipementRequest $request , Equipement $equipement) {
-        try {
-        $equipement->nom = $request->nom ;
-        $equipement->categorie = $request->categorie ;
-        $equipement->etat = $request->etat ;
-        $equipement->description = $request->descrption ;
-        $equipement->disponibilite = $request->disponibilite ?? 1 ;
+    public function edit(Equipement $equipement)
+    {
+        return view('equipements.edit', compact('equipement'));
+    }
 
-        $equipement->update() ;
-        return redirect()->route('dashboard')->with('success' , "Le matériel a bien été mis à jour") ;
-    } catch (Exception $e) {
-            //Retour au formulaire en cas de non validation des données
-            return redirect()->back()->withInput();
-        }
+    public function update(Request $request, Equipement $equipement)
+    {
+        $data = $request->validate([
+            'nom' => 'required|string|max:150',
+            'categorie' => 'nullable|string|max:150',
+            'etat' => 'nullable|string|max:100',
+            'description' => 'nullable|string',
+            'disponibilite' => 'sometimes|boolean',
+        ]);
+
+        $data['disponibilite'] = $request->has('disponibilite') ? (bool) $request->input('disponibilite') : $equipement->disponibilite;
+
+        $equipement->update($data);
+
+        return redirect()->route('equipements.index')->with('success', 'Équipement mis à jour');
+    }
+
+    public function destroy(Equipement $equipement)
+    {
+        $equipement->delete();
+        return redirect()->route('equipements.index')->with('success', 'Équipement supprimé');
     }
 }

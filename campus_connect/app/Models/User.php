@@ -48,6 +48,11 @@ class User extends Authenticatable
     }
 
     public function annonce () {
-        return $this->hasMany(Annonce::class) ;
+        return $this->hasMany(Annonce::class, 'auteur_id') ;
+        }
+
+    public function role () {
+        return $this->belongsTo(Role::class) ;  
     }
+    
 }

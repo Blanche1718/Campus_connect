@@ -122,8 +122,8 @@
             
 
             <div class="d-flex gap-3 justify-content-end pt-3">
-                <a href="{{route('dashboard')}}" class="btn btn-outline-danger"> <i class="bi bi-x-circle"></i> Abandonner la publication</a>
-                <input type="submit" name="submit" class="btn btn-primary" value="Publier l'annonce" >
+                <a href="{{route('dashboard')}}" class="btn btn-outline-danger"> <i class="bi bi-x-circle"></i> Abandonner la réservation</a>
+                <input type="submit" name="submit" class="btn btn-primary" value="Faire la réservation" >
             </div>
         </div>
     </form>
