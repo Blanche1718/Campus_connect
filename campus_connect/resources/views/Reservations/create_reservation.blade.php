@@ -1,10 +1,12 @@
+<x-app-layout>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Edition d'annonce</title>
+    <title>Faire une réservation</title>
     <link rel="stylesheet" href="/Bootstrap_5/css/bootstrap.min.css">
     <link rel="stylesheet" href="/bootstrap-icons/font/bootstrap-icons.css">
     
@@ -71,47 +73,18 @@
 </head>
 <body>
 
-    <form action="{{route('update' , $annonce->id)}}" method="POST" class="form-group d-flex flex-column align-items-center">
-    @csrf
-        @method('put')
-        <h1 class="text-center mb-4" style="color: var(--primary-color);">Editer  l'annonce 📝</h1>
+    <form action="{{route('store_reservation')}}" method="POST" class="form-group d-flex flex-column align-items-center">
+        @csrf
+
+        <h1 class="text-center mb-4" style="color: var(--primary-color);">Faire une réservation 📝</h1>
         <div class="container d-flex flex-column justify-content-center modern-card gap-3" style="max-width: 650px;">
-            
-            <div>
-                <label for="titre"><strong>Titre <span class="text-danger">*</span></strong> </label>
-                @error('titre') <div class="text-danger small">{{$message}}</div> @enderror
-                <input type="text" name="titre" class="form-control @error('titre') is-invalid @enderror " value="{{old ('titre' , $annonce->titre) }}" placeholder="Ex: Examen de fin de semestre">
-            </div>
 
             <div>
-                <label for="contenu"> <strong>Contenu<span class="text-danger">*</span></strong> </label>
-                <textarea name="contenu" id="contenu" cols="30" rows="6" class="form-control @error('contenu') is-invalid @enderror">{{old('contenu' , $annonce->contenu)}}</textarea>
-                @error('contenu') <div class="text-danger small">{{$message}}</div> @enderror
-            </div>
-
-            <div>
-                <label for="Categorie"><strong>Categorie <span class="text-danger">*</span></strong></label>
-                <select name="categorie_id" class="form-select @error('categorie_id') is-invalid @enderror">
-                    <option value="">--Sélectionnez une categorie--</option>
-                    @foreach ($categories as $categorie)
-                        <option value="{{$categorie->id}}">{{$categorie->nom}}</option>
-                    @endforeach
-                </select>
-                @error('categorie_id') <div class="text-danger small">{{$message}}</div> @enderror
-            </div>
-
-            <div>
-                <label for="date_evenement"><strong>Date de l'événement</strong></label>
-                <input type="date" name="date_evenement" value="{{old('date_evenement' , $annonce->date_evenemrnt)}}" class="form-control @error('date_evenement') is-invalid @enderror" >
-                @error('date_evenement') <div class="text-danger small">{{$message}}</div> @enderror
-            </div>
-
-
-            <div>
-                <label for="salle_id"><strong>Sélectionnez une salle si concernée</strong></label>
+                <label for="salle_id"><strong>Sélectionnez une salle: </strong></label>
                 <select name="salle_id" class="form-select @error('salle_id') is-invalid @enderror">
                     <option value="">--Sélectionnez une salle--</option>
-                    @foreach ($categories as $categorie) <option value="{{$categorie->id}}">{{$categorie->nom}}</option>
+                    @foreach ($salles as $salle) 
+                        <option value="{{$salle->id}}">{{$salle->nom}}</option>
                     @endforeach
                 </select>
                 @error('salle_id') <div class="text-danger small">{{$message}}</div> @enderror
@@ -119,20 +92,41 @@
 
 
             <div>
-                <label for="equipement_id"><strong>Sélectionnez les équipements concernés: </strong></label>
+                <label for="equipement_id"><strong>Sélectionnez un equipement: </strong></label>
                 <select name="equipement_id" class="form-select @error('equipement_id') is-invalid @enderror">
                     <option value="">--Sélectionnez les équipements--</option>
-                    @foreach ($categories as $categorie) <option value="{{$categorie->id}}" {{old('categorie_id')==$categorie->id ? 'selected':''}}>{{$categorie->nom}}</option>
+                    @foreach ($equipements as $equipement) 
+                        <option value="{{$equipement->id}}" {{old('equipement_id')==$equipement->id ? 'selected':''}}>{{$equipement->nom}}</option>
                     @endforeach
                 </select>
                 @error('equipement_id') <div class="text-danger small">{{$message}}</div> @enderror
             </div>
+             <div>
+                <label for="date_debut"><strong>Date de debut <span class="text-danger">*</span></strong></label>
+                <input type="date" name="date_debut" value="{{old('date_debut')}}" class="form-control @error('date_debut') is-invalid @enderror" >
+                @error('date_debut') <div class="text-danger small">{{$message}}</div> @enderror
+            </div>
+
+            <div>
+                <label for="date_fin"><strong>Date de fin<span class="text-danger">*</span></strong></label>
+                <input type="date" name="date_fin" value="{{old('date_fin')}}" class="form-control @error('date_fin') is-invalid @enderror" >
+                @error('date_fin') <div class="text-danger small">{{$message}}</div> @enderror
+            </div>
+
+            <div>
+                <label for="motif"><strong>Motif</strong></label>
+                <textarea name="motif" id="" cols="30" class="form-control" rows="10"></textarea>
+                @error('motif') <div class="text-danger small">{{$message}}</div> @enderror
+            </div>
+
+            
 
             <div class="d-flex gap-3 justify-content-end pt-3">
-                <a href="{{route('dashboard')}}" class="btn btn-outline-danger"> <i class="bi bi-x-circle"></i> Abandonner la modification</a>
+                <a href="{{route('dashboard')}}" class="btn btn-outline-danger"> <i class="bi bi-x-circle"></i> Abandonner la publication</a>
                 <input type="submit" name="submit" class="btn btn-primary" value="Publier l'annonce" >
             </div>
         </div>
     </form>
 </body>
 </html>
+</x-app-layout>
