@@ -62,9 +62,13 @@ Route::prefix('salles')->controller(SalleController::class)->group(function () {
 
 //Routes pour la gesttion des equipemens
 Route::prefix('equipements')->controller(EquipementController::class)->group(function (){
-    //Formulaire de creation d'equipements
+    //Formulaire de creation  et d'enregistrement d'equipements
     Route::get('create_equipement' , 'create')->name('create_equipement') ;
     Route::post('store' , 'store')->name('store_equipement') ;
+
+    //Formulaire  et applications de modifications  d'equipements
+    Route::get('{equipement}/editer_equipement' , 'editer_equipement_form')->name('editer_equipement_form') ;
+    Route::put('editer_equipement_put/{equipement}' , 'editer_equipement_put')->name('editer_equipement_put') ;
 }) ;
 
 

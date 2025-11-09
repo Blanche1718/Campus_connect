@@ -170,7 +170,7 @@
     </div>
 
     <div class="text-center mt-4">
-      <a href="#" class="btn btn-primary">Voir toutes les annonces</a>
+      <a href="{{route('toutes_annonces')}}" class="btn btn-primary">Voir toutes les annonces</a>
     </div>
   </div>
 

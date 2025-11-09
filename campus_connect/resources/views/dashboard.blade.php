@@ -5,5 +5,7 @@
         </h2>
     </x-slot>
     <a href="{{route('editer_salle' , 1)}}">Mof</a>
+    <a href="{{route('edite' , 2)}}">Annonce</a>
+
 
 </x-app-layout>

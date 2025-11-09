@@ -75,33 +75,37 @@
 </head>
 <body>
 
-    <form action="{{route('store_equipement')}}" method="POST" class="form-group d-flex flex-column align-items-center">
+    <form action="{{$equipement ? route('editer_equipement_put', $equipement->id) : route('store_equipement')}}" method="POST" class="form-group d-flex flex-column align-items-center">
         @csrf
 
-        <h1 class="text-center mb-4" style="color: var(--primary-color);">Créer un matériel</h1>
+        @if ($equipement)
+            @method('PUT')
+        @endif
+
+        <h1 class="text-center mb-4" style="color: var(--primary-color);">{{ $equipement ? "Modifier le matériel" : "Créer un matériel"}}</h1>
         <div class="container d-flex flex-column justify-content-center modern-card gap-3 mb-3" style="max-width: 650px;">
             
             <div>
                 <label for="nom"><strong>Nom du matériel<span class="text-danger">*</span></strong> </label>
-                <input type="text" name="nom" class="form-control @error ('nom') is-invalid @enderror " value="{{old ('nom') }}" placeholder="Ex: Vidéo projecteur" required>
+                <input type="text" name="nom" class="form-control @error ('nom') is-invalid @enderror " value="{{old ('nom' , $equipement->nom ?? '') }}" placeholder="Ex: Vidéo projecteur" required>
                 @error('nom') <div class="text-danger small">{{$message}}</div> @enderror
             </div>
 
             <div>
                 <label for="categorie"><strong>Categorie </strong> </label>
-                <input type="text"  name="categorie" class="form-control @error('categorie') is-invalid @enderror " value="{{old ('categorie') }}" placeholder="Ex:Projection" required>
+                <input type="text"  name="categorie" class="form-control @error('categorie') is-invalid @enderror " value="{{old ('categorie' , $equipement->categorie ?? '') }}" placeholder="Ex:Projection" required>
                 @error('categorie') <div class="text-danger small">{{$message}}</div> @enderror
             </div>
 
             <div>
                 <label for="etat"><strong>Etat </strong> </label>
-                <input type="text" name="etat" class="form-control @error('etat') is-invalid @enderror " value="{{old ('etat') }}" placeholder="Bon" required>
+                <input type="text" name="etat" class="form-control @error('etat') is-invalid @enderror " value="{{old ('etat', $equipement->etat ?? '') }}" placeholder="Bon" required>
                 @error('etat') <div class="text-danger small">{{$message}}</div> @enderror
             </div>
 
             <div>
                 <label for="description"> <strong>Description</strong> </label>
-                <textarea name="description" id="description" cols="30" rows="6" class="form-control @error('description') is-invalid @enderror">{{old('description')}}</textarea>
+                <textarea name="description" id="description" cols="30" rows="6" class="form-control @error('description') is-invalid @enderror">{{old('description' , $equipement->description ?? '')}}</textarea>
                 @error('description') <div class="text-danger small">{{$message}}</div> @enderror
             </div>
 
@@ -109,8 +113,8 @@
                 <label for="disponibilite"><strong>disponibilite <span class="text-danger">*</span></strong> </label>
                 <select name="disponibilite" id="" class="form-control">
                     <option value="">--Sélectionner une option--</option>
-                    <option value='0'>Indisponible</option>
-                    <option value='1'>Disponible</option>
+                    <option value='0' {{old('disponibilite' , $equipement->disponibilite ?? '')==0 ? 'selected' :''}}>Indisponible</option>
+                    <option value='1' {{old('disponibilite' , $equipement->disponibilite ?? '') == 1 ? 'selected' : ''}}>Disponible</option>
                 </select>
                 @error ('disponibilite') <div class="text-danger small">{{$mesage}}</div> @enderror
             </div>
