@@ -2,10 +2,14 @@
 
 use App\Http\Controllers\AnnonceController;
 use App\Http\Controllers\ProfileController;
+use App\Models\Annonce;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    // On récupère les 4 dernières annonces avec leurs catégories et auteurs
+    // 'with()' permet d'éviter les requêtes N+1 (très bonne pratique)
+    $annonces = Annonce::with('category', 'user')->latest()->take(4)->get();
+    return view('welcome', compact('annonces'));
 });
 
 Route::get('/dashboard', function () {
@@ -19,15 +23,15 @@ Route::middleware('auth')->group(function () {
 });
 
 
-Route::prefix('/annonces')->controller(AnnonceController::class)->group(function () {
-    //Formulaire de création des annonces
-    Route::get ('/create_annonce' , 'create')->name('create_annonce') ;
-
-    //Sauvegarde de l'annonce
-    Route::post('/store' , 'store')->name('store') ;
-
-
-    //Voir toutes les categories
-    Route::get('toutes_annonces' , 'toutes_annonces')->name('toutes_annonces');
+// Routes pour les Annonces
+Route::prefix('annonces')->name('annonces.')->controller(AnnonceController::class)->group(function () {
+    // Accessible à tous les utilisateurs connectés
+    Route::get('/', 'toutes_annonces')->name('index')->middleware('auth');
+    
+    // Accessible uniquement aux enseignants et admins
+    Route::middleware(['auth', 'role:admin,enseignant'])->group(function() {
+        Route::get('/creer', 'create')->name('create');
+        Route::post('/', 'store')->name('store');
+    });
 });
 require __DIR__.'/auth.php';

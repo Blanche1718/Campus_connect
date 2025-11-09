@@ -4,16 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Category extends Model
+class Role extends Model
 {
     protected $fillable = [
         'nom',    
 
 ];
-    public function annonce() {
-        return $this->hasMany(Annonce::class);
+    public function user() {
+        return $this->hasMany(User::class);
     }
-
+    
 
 }
 
