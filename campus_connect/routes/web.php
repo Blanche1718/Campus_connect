@@ -10,6 +10,7 @@ use App\Models\Category;
 use App\Models\Salle;
 use App\Models\Equipement;
 use App\Http\Controllers\CategorieController;
+use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\SalleController;
 
 Route::get('/', function () {
@@ -60,5 +61,19 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('salles', SalleController::class)->except(['show']);
     Route::resource('equipements', EquipementController::class)->except(['show']);
 });
+
+//Les réservations
+Route::prefix('Reservations')->controller(ReservationController::class)->group(function (){
+    Route::get('/' , 'index')->name('toutes_reservations') ;
+    
+    Route::get('/create_reservation_form' , 'create')->name('create_reservation_form') ;
+    Route::post('/store_reservation' , 'store')->name('store_reservation') ;
+    //Valider un reservation
+    Route::patch('/valider_reservation/{reservation}' , 'valider')->name('valider_reservation') ;
+    //Rejeter un reservation
+    Route::patch('/rejeter_reservation/{reservation}' , 'rejeter')->name('rejeter_reservation') ;
+    //Supprimer un reservation
+    Route::delete('/supprimer_reservation/{reservation}' , 'supprimer')->name('supprimer_reservation') ;
+}) ;
 
 require __DIR__.'/auth.php';

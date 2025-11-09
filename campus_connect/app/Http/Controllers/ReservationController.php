@@ -2,38 +2,75 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ReservationRequest;
-use App\Models\Equipement;
 use App\Models\Reservation;
 use App\Models\Salle;
-use Exception;
+use App\Models\Equipement;
 use Illuminate\Http\Request;
 
 class ReservationController extends Controller
 {
-   public function create () {
-    $salles = Salle::all() ;
-    $equipements = Equipement::all() ;
-    return view('Reservations.create_reservation' , compact('salles' , 'equipements'));
-   }
+    public function index()
+    {
+        $reservations = Reservation::with('salle', 'equipement', 'user')->get();
+        return view('Reservations.index', compact('reservations'));
+    }
 
-   public function store (ReservationRequest $request) {
-        $reservation = new Reservation() ;
-        try {
+    public function create()
+    {
+        $salles = Salle::all();
+        $equipements = Equipement::all();
+        return view('reservations.create_reservation', compact('salles', 'equipements'));
+    }
 
-       $reservation->user_id = Auth()->user()->id ;
-       $reservation->salle_id = $request->salle_id ;
-       $reservation->equipement_id = $request->equipement_id ;
-       $reservation->date_debut = $request->date_debut ;
-       $reservation->date_fin = $request->date_fin ;
-       $reservation->motif = $request->motif ;
+    public function store(Request $request)
+    {
+        $request->validate([
+            'salle_id' => 'required|exists:salles,id',
+            'equipement_id' => 'nullable|exists:equipements,id',
+            'date_debut' => 'required|date|after_or_equal:now',
+            'date_fin' => 'required|date|after:date_debut',
+            'motif' => 'nullable|string|max:255',
+        ]);
 
-       $reservation->save ();
+        // Vérifie les chevauchements de réservation
+        $existe = Reservation::where('salle_id', $request->salle_id)
+            ->where(function ($query) use ($request) {
+                $query->whereBetween('date_debut', [$request->date_debut, $request->date_fin])
+                      ->orWhereBetween('date_fin', [$request->date_debut, $request->date_fin]);
+            })
+            ->exists();
 
-        
-        } catch (Exception $e) {
-            return redirect()->back()->withInput() ;
+        if ($existe) {
+            return back()->with('error', 'Cette salle est déjà réservée à ce moment.')->withInput();
         }
 
-   }
+        Reservation::create([
+            'user_id' => auth()->id(),
+            'equipement_id' => $request->equipement_id,
+            'salle_id' => $request->salle_id,
+            'date_debut' => $request->date_debut,
+            'date_fin' => $request->date_fin,
+            'motif' => $request->motif,
+            'statut' => 'en_attente',
+        ]);
+
+        return redirect()->route('dashboard')->with('success', 'Réservation créée avec succès !');
+    }
+
+    public function valider (Reservation $reservation) {
+        $reservation->statut = 'valide' ;
+        $reservation->update() ;
+        return redirect()->route('toutes_reservations') ;
+    }
+
+    public function rejeter (Reservation $reservation) {
+        $reservation->statut = 'rejete' ;
+        $reservation->update() ;
+        return redirect()->route('toutes_reservations') ;
+    }
+
+    public function supprimer (Reservation $reservation) {
+        $reservation->delete() ;
+        return redirect()->route('toutes_reservations') ;
+    }
 }

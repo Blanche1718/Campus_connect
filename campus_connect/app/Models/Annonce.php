@@ -25,6 +25,10 @@ class Annonce extends Model
     ];
 
 
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'auteur_id');
+    }
     public function auteur()
     {
         return $this->belongsTo(User::class, 'auteur_id');

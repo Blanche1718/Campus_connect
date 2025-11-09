@@ -3,7 +3,9 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Container\Attributes\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth as FacadesAuth;
 use Symfony\Component\HttpFoundation\Response;
 
 class CheckRole
@@ -16,11 +18,11 @@ class CheckRole
      */
     public function handle(Request $request, Closure $next, ...$roles): Response
     {
-        if (!Auth::check()) {
+        if (!FacadesAuth::check()) {
             return redirect('login');
         }
 
-        if (!in_array(Auth::user()->role->nom, $roles)) {
+        if (!in_array(FacadesAuth::user()->role->nom, $roles)) {
             abort(403, 'Accès non autorisé.');
         }
 

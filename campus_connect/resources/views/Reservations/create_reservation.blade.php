@@ -1,4 +1,5 @@
 <x-app-layout>
+    <x-slot name="header"><h5>Faire une réservation</h5></x-slot>
 
 <!DOCTYPE html>
 <html lang="en">

@@ -73,7 +73,7 @@
 </head>
 <body>
 
-    <form action="{{route('store')}}" method="POST" class="form-group d-flex flex-column align-items-center">
+    <form action="{{route('annonces.store')}}" method="POST" class="form-group d-flex flex-column align-items-center">
         @csrf
 
         <h1 class="text-center mb-4" style="color: var(--primary-color);">Créer une annonce 📝</h1>
