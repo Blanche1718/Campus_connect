@@ -59,8 +59,7 @@ class AnnonceController extends Controller
     }
 
      /*
-     
-     * Methode pour afficher une annonce particulière
+
      
     public function annonce_particuliere (Annonce $annonce) {
         return view('Annonces.annonce_particuliere' , compact('annonce')) ;
@@ -88,7 +87,5 @@ class AnnonceController extends Controller
         } catch (Exception $e) {
             return redirect()->route('edite')->withInput();
         }
-    }
+    }*/
 }
-*/
-
