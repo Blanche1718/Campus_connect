@@ -206,7 +206,7 @@
             <div class="col-lg-3 col-md-6">
                 <div class="card annonce-card">
                     <div class="card-body">
-                        <span class="badge bg-primary-soft bg-opacity-10 text-primary mb-2 align-self-start">{{ $annonce->category->nom ?? 'Non classé' }}</span>
+                        <span class="badge bg-primary-soft bg-opacity-10 text-primary mb-2 align-self-start">{{ $annonce->categorie ->nom ?? 'Non classé' }}</span>
                         <h5 class="card-title">{{ $annonce->titre }}</h5>
                         <p class="card-text text-muted">{{ Str::limit($annonce->contenu, 80) }}</p>
                     </div>
