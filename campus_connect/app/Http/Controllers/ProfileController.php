@@ -11,6 +11,39 @@ use Illuminate\View\View;
 
 class ProfileController extends Controller
 {
+    // afficher tous les utilisateurs
+    public function index(): View
+    {
+        $users = User::all();
+        return view('profile.index', [
+            'users' => $users,
+        ]);
+    }
+// créer un nouvel utilisateur
+    public function create(): View
+    {
+        $roles = Role::all();
+        return view('profile.create', [
+            'roles' => $roles,
+        ]);
+    
+    }
+// enregistrer un nouvel utilisateur
+    public function store(ProfileUpdateRequest $request): RedirectResponse
+    {
+        validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|confirmed',
+            'role_id' => 'required|exists:roles,id',
+            
+        ]);
+        $data = $request->validated();
+        $data['password'] = bcrypt($data['password']);
+        User::create($data);
+        return Redirect::route('profile.index')->with('success', 'Utilisateur créé avec succès.');
+    }
+
     /**
      * Display the user's profile form.
      */

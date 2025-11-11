@@ -91,14 +91,7 @@
 
             <hr class="my-3">
 
-            <div class="ad-content">
-                <p class="text-center">
-                    {{Str::limit($annonce->contenu , 200)}} <br>
-                    <div class="justify-content-end"><a href="{{route('annonce_particuliere' , $annonce->id)}}" class="btn btn-light justify-content-end">Lire la  suite...</a></div>
-                </p>
-                <hr>
-            </div>
-        
+           
         </div>
         @endforeach
     @endif

@@ -22,6 +22,8 @@ class DatabaseSeeder extends Seeder
             EquipementSeeder::class,
             UserSeeder::class,
             AnnonceSeeder::class,
+            ReservationSeeder::class
+            
         ]);
     }
 }

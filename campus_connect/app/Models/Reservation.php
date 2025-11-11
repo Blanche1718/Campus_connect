@@ -3,11 +3,17 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
+use App\Models\Salle;
+use App\Models\Equipement;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Reservation extends Model
+
 {
+    use HasFactory;
     protected $fillable = [
-        "user_id",
+        "user_id" ,
         'salle_id' ,
         "equipement_id",
         "date_debut" ,
@@ -17,7 +23,7 @@ class Reservation extends Model
     ] ;
 
     public function user () {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class , );
     }
     
     public function salle () {

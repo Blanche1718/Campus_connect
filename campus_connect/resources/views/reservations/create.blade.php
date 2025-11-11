@@ -120,6 +120,9 @@
                 @error('motif') <div class="text-danger small">{{$message}}</div> @enderror
             </div>
 
+            <!-- associer l'id de l'utilisateur connecté au formulaire  -->
+            <input type="hidden" name="user_id" value="{{auth()->user()->id}}">
+
             
 
             <div class="d-flex gap-3 justify-content-end pt-3">

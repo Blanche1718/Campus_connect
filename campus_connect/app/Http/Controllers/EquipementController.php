@@ -6,17 +6,19 @@ use Illuminate\Http\Request;
 use App\Models\Equipement;
 class EquipementController extends Controller
 {
+    // fonction index pour afficher la liste des équipements 
     public function index()
     {
         $equipements = Equipement::latest()->paginate(15);
         return view('equipements.index', compact('equipements'));
     }
+    // fonction create pour afficher le formulaire de création d'un équipement
 
     public function create()
     {
         return view('equipements.create');
     }
-
+// fonction store pour enregistrer un équipement
     public function store(Request $request)
     {
         $data = $request->validate([
@@ -38,7 +40,7 @@ class EquipementController extends Controller
     {
         return view('equipements.edit', compact('equipement'));
     }
-
+// fonction update
     public function update(Request $request, Equipement $equipement)
     {
         $data = $request->validate([
@@ -55,7 +57,7 @@ class EquipementController extends Controller
 
         return redirect()->route('equipements.index')->with('success', 'Équipement mis à jour');
     }
-
+// fonction destroy
     public function destroy(Equipement $equipement)
     {
         $equipement->delete();

@@ -13,7 +13,7 @@
 <body>
     
     <div class="container">
-        <h2 class="mb-4 text-center">📅 Liste des Réservations</h2>
+        <h2 class="mb-4 text-center"> Liste des Réservations</h2>
     
         @if(session('success'))
             <div class="alert alert-success text-center">{{ session('success') }}</div>
@@ -58,7 +58,7 @@
                             </td>
                             <td>{{ $reservation->motif ?? '-' }}</td>
                             <td>
-                                {{-- Tu pourras plus tard ajouter ici les boutons pour valider ou rejeter --}}
+                                
                                 @if ($reservation->statut == 'en_attente')
                                     <div class="d-flex flex-row gap-2">
                                         <form action="{{route('valider_reservation' , $reservation->id)}}" method="POST">

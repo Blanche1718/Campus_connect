@@ -9,17 +9,18 @@ use App\Models\User;
 use App\Models\Category;
 use App\Models\Salle;
 use App\Models\Equipement;
+use App\Models\Reservation;
 use App\Http\Controllers\CategorieController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\SalleController;
+use App\Http\Controllers\UserController;
+require __DIR__.'/auth.php';
 
 Route::get('/', function () {
-
-    // On récupère les 4 dernières annonces avec leurs catégories et auteurs
-    // 'with()' permet d'éviter les requêtes N+1 (très bonne pratique)
-    $annonces = Annonce::with('categorie', 'user')->latest()->take(8)->get();
+    $annonces = Annonce::with('categorie', 'auteur')->latest()->take(8)->get();
     return view('welcome', compact('annonces'));
 });
+// Dashboard admin
 
 Route::get('/dashboard', function () {
     $stats = [
@@ -28,52 +29,78 @@ Route::get('/dashboard', function () {
         'categories' => Category::count(),
         'salles' => Salle::count(),
         'equipements' => Equipement::count(),
+        'reservations' => Reservation::count()
     ];
-
     $recentAnnonces = Annonce::with(['auteur','categorie'])->latest('date_publication')->take(8)->get();
-
     return view('dashboard', compact('stats','recentAnnonces'));
-})->middleware(['auth'])->name('dashboard');
+})->middleware(['auth', 'role:admin'])->name('dashboard');
 
+// Routes pour le profil utilisateur
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-
+// Routes pour la gestion des utilisateurs (admin uniquement)
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::resource('users', UserController::class)->except(['show']);
+});
 
 
 // Routes pour les Annonces
 Route::prefix('annonces')->name('annonces.')->controller(AnnonceController::class)->group(function () {
     // Accessible à tous les utilisateurs connectés
-    Route::get('/', 'toutes_annonces')->name('index')->middleware('auth');
-    
+    Route::get('/', 'index')->name('index')->middleware('auth');
     // Accessible uniquement aux enseignants et admins
     Route::middleware(['auth', 'role:admin,enseignant'])->group(function() {
-        Route::get('/creer', 'create')->name('create');
-        Route::post('/', 'store')->name('store');
+        Route::get('/create', 'create')->name('create');
+        Route::post('/store', 'store')->name('store');
     });
 });
 
-// Routes pour les Equipements
-Route::middleware(['auth'])->group(function () {
+// Routes pour la gestion des catégories, salles et équipements (admin uniquement)
+Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::resource('categories', CategorieController::class)->except(['show']);
     Route::resource('salles', SalleController::class)->except(['show']);
     Route::resource('equipements', EquipementController::class)->except(['show']);
 });
 
-//Les réservations
-Route::prefix('Reservations')->controller(ReservationController::class)->group(function (){
-    Route::get('/' , 'index')->name('toutes_reservations') ;
-    
-    Route::get('/create_reservation_form' , 'create')->name('create_reservation_form') ;
-    Route::post('/store_reservation' , 'store')->name('store_reservation') ;
-    //Valider un reservation
-    Route::patch('/valider_reservation/{reservation}' , 'valider')->name('valider_reservation') ;
-    //Rejeter un reservation
-    Route::patch('/rejeter_reservation/{reservation}' , 'rejeter')->name('rejeter_reservation') ;
-    //Supprimer un reservation
-    Route::delete('/supprimer_reservation/{reservation}' , 'supprimer')->name('supprimer_reservation') ;
+// Routes pour les catégories
+Route::prefix('categories')->controller(CategorieController::class)->group(function () {
+    Route::get('/', 'index')->name('categories.index');
+    Route::get('/create', 'create')->name('categories.create');
+    Route::post('/store', 'store')->name('categories.store');
+    // Route::get('/{category}/edit', 'edit')->name('categories.edit');
+    // Route::put('/{category}', 'update')->name('categories.update');
+    // Route::delete('/{category}', 'destroy')->name('categories.destroy');
+});
+
+//Les salles
+Route::prefix('salles')->controller(SalleController::class)->group(function (){
+    Route::get('/' , 'index')->name('salles.index') ;
+    Route::get('/create' , 'create')->name('salles.create') ;
+    Route::post('/store' , 'store')->name('salles.store') ;
+    // Route::get('/{salle}/edit' , 'edit')->name('salles.edit') ;
+    // Route::put('/{salle}' , 'update')->name('salles.update') ;
+    // Route::delete('/{salle}' , 'destroy')->name('salles.destroy') ;
+}) ;    
+
+//Les équipements
+Route::prefix('equipements')->controller(EquipementController::class)->group(function (){
+    Route::get('/' , 'index')->name('equipements.index') ;
+    Route::get('/create' , 'create')->name('equipements.create') ;
+    Route::post('/store' , 'store')->name('equipements.store') ;
+    // Route::get('/{equipement}/edit' , 'edit')->name('equipements.edit') ;
+    // Route::put('/{equipement}' , 'update')->name('equipements.update') ;
+    // Route::delete('/{equipement}' , 'destroy')->name('equipements.destroy') ;
 }) ;
 
-require __DIR__.'/auth.php';
+//Les réservations
+Route::prefix('reservations')->controller(ReservationController::class)->group(function (){
+    Route::get('/' , 'index')->name('index') ;
+    Route::get('/create' , 'create')->name('reservations.create') ;
+    Route::post('/store' , 'store')->name('store_reservation') ; // Renommé pour correspondre au formulaire
+    Route::patch('/valider/{reservation}' , 'valider')->name('valider_reservation') ;
+    Route::patch('/rejeter/{reservation}' , 'rejeter')->name('rejeter_reservation') ;
+    Route::delete('/supprimer/{reservation}' , 'supprimer')->name('supprimer_reservation') ;
+}) ;

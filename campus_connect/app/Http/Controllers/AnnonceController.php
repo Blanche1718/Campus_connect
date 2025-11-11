@@ -10,6 +10,13 @@ use Illuminate\Http\Request;
 
 class AnnonceController extends Controller
 {
+     /**
+     * Methode pour afficher toutes les annonces
+     */
+    public function index (){
+        $annonces = Annonce::with('auteur')->orderBy('updated_at' , 'desc')->get ();
+        return view('annonces.index' , compact('annonces') ) ; 
+    }
     /** 
      * Methode pour la création des annonces  
     * */
@@ -18,7 +25,7 @@ class AnnonceController extends Controller
         //Recuperation des categories pour en faire une liste de selection dans la vue
         $categories = Category::all() ;
         
-        return view ('Annonces.create_annonce' , compact('categories')); //reservée au enseignants et admins
+        return view ('annonces.create' , compact('categories')); //reservée au enseignants et admins
     }
 
 
@@ -35,10 +42,8 @@ class AnnonceController extends Controller
         $annonce->auteur_id = auth()->user()->id ;
         $annonce->salle_id = $request->salle_id ;
         $annonce->equipement_id = $request->equipement_id ;
-        $annonce->date_publication = now() ;
-        $annonce->date_evenement = $request->date_evenement ;
-       /* $annonce->salle_id = $request->salle_id ;
-        $annonce->equipement_id = $request->equipement_id ;*/
+        $annonce->date_publication = now();
+        $annonce->date_evenement = $request->date_evenement;
 
         try {
             $annonce->save() ;
@@ -50,13 +55,7 @@ class AnnonceController extends Controller
         
     }
 
-    /**
-     * Methode pour afficher toutes les annonces
-     */
-    public function toutes_annonces (){
-        $annonces = Annonce::with('auteur')->orderBy('updated_at' , 'desc')->get ();
-        return view('Annonces.toutes_annonces' , compact('annonces') ) ; 
-    }
+   
 
      /*
 

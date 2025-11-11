@@ -35,7 +35,7 @@
 
                 <!-- Utilisateurs -->
                 <div>
-                    @if(Route::has('users.index'))
+    
                         <a href="{{ route('users.index') }}" class="block no-underline">
                             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6 hover:shadow-md transition">
                                 <div class="flex justify-between items-start">
@@ -44,19 +44,14 @@
                                         <p class="mt-2 text-3xl font-bold text-gray-900 dark:text-white">{{ $stats['users'] ?? 0 }}</p>
                                     </div>
                                     <div>
-                                        @if(Route::has('users.create'))
+            
                                             <a href="{{ route('users.create') }}" class="inline-block bg-blue-600 text-white text-xs px-3 py-1 rounded">Créer</a>
-                                        @endif
+                                    
                                     </div>
                                 </div>
                             </div>
                         </a>
-                    @else
-                        <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
-                            <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Utilisateurs</h3>
-                            <p class="mt-2 text-3xl font-bold text-gray-900 dark:text-white">{{ $stats['users'] ?? 0 }}</p>
-                        </div>
-                    @endif
+                  
                 </div>
 
                 <!-- Catégories -->
@@ -112,7 +107,7 @@
 
                 <!-- Reservations -->
                 <div>
-                    <a href="{{ route('toutes_reservations') }}" class="block no-underline">
+                    <a href="{{ route('index') }}" class="block no-underline">
                         <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6 hover:shadow-md transition">
                             <div class="flex justify-between items-start">
                                 <div>
@@ -120,7 +115,7 @@
                                     <p class="mt-2 text-3xl font-bold text-gray-900 dark:text-white">{{ $stats['reservations'] ?? 0 }}</p>
                                 </div>
                                 <div>
-                                    <a href="{{ route('toutes_reservations') }}" class="inline-block bg-blue-600 text-white text-xs px-3 py-1 rounded">Voir</a>
+                                    <a href="{{ route('reservations.create') }}" class="inline-block bg-blue-600 text-white text-xs px-3 py-1 rounded">Créer</a>
                                 </div>
                             </div>
                         </div>

@@ -12,19 +12,21 @@ class ReservationController extends Controller
     public function index()
     {
         $reservations = Reservation::with('salle', 'equipement', 'user')->get();
-        return view('Reservations.index', compact('reservations'));
+        return view('reservations.index', compact('reservations'));
     }
-
+// fonction create pour afficher le formulaire de création d'une réservation
     public function create()
     {
         $salles = Salle::all();
         $equipements = Equipement::all();
-        return view('reservations.create_reservation', compact('salles', 'equipements'));
+        return view('reservations.create', compact('salles', 'equipements'));
     }
+// fonction store pour enregistrer une réservation
 
     public function store(Request $request)
     {
         $request->validate([
+            'user_id' => 'required|exists:users,id',
             'salle_id' => 'required|exists:salles,id',
             'equipement_id' => 'nullable|exists:equipements,id',
             'date_debut' => 'required|date|after_or_equal:now',
@@ -60,17 +62,17 @@ class ReservationController extends Controller
     public function valider (Reservation $reservation) {
         $reservation->statut = 'valide' ;
         $reservation->update() ;
-        return redirect()->route('toutes_reservations') ;
+        return redirect()->route('index') ;
     }
 
     public function rejeter (Reservation $reservation) {
         $reservation->statut = 'rejete' ;
         $reservation->update() ;
-        return redirect()->route('toutes_reservations') ;
+        return redirect()->route('index') ;
     }
 
     public function supprimer (Reservation $reservation) {
         $reservation->delete() ;
-        return redirect()->route('toutes_reservations') ;
-    }
+        return redirect()->route('index') ;}
+
 }

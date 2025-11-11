@@ -193,14 +193,13 @@
         <div class="hero-content">
             <h1>L’Information Universitaire Centralisée</h1>
             <p>Restez connecté à la vie du campus. Consultez les dernières annonces, réservez des salles et ne manquez aucun événement important.</p>
->>>>>>> origin/dev
         </div>
     </header>
 
     <!-- Section Annonces -->
     <main class="container my-5 py-4">
         <div class="text-center">
-            <h2 class="section-title">📢 Dernières Annonces</h2>
+            <h2 class="section-title"> Dernières Annonces</h2>
         </div>
         <div class="row g-4">
             @forelse ($annonces as $annonce)
