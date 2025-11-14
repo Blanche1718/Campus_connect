@@ -123,4 +123,5 @@ Route::prefix('reservations')->controller(ReservationController::class)->group(f
     Route::patch('/valider/{reservation}' , 'valider')->name('valider_reservation') ;
     Route::patch('/rejeter/{reservation}' , 'rejeter')->name('rejeter_reservation') ;
     Route::delete('/supprimer/{reservation}' , 'supprimer')->name('supprimer_reservation') ;
+    Route::get('/{reservation}' , 'show')->name('reservations.show') ;
 }) ;

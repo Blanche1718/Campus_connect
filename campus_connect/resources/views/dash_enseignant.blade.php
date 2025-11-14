@@ -50,7 +50,7 @@
                             <div class="icon icon-reservations"><i class="bi bi-calendar-check-fill"></i></div>
                             <div>
                                 <div class="fs-4 fw-bold">{{ $stats['mes_reservations'] }}</div>
-                                <div class="text-muted">Réservations à venir</div>
+                                <div class="text-muted">Réservations</div>
                             </div>
                         </div>
                     </div>
@@ -70,6 +70,7 @@
                                         <h5 class="mb-1">{{ $annonce->titre }}</h5>
                                         <small class="text-muted">{{ $annonce->date_publication->diffForHumans() }}</small>
                                     </div>
+
                                     <p class="mb-1 text-muted">{{ Str::limit($annonce->contenu, 100) }}</p>
                                     @if($annonce->categorie)
                                         <small><span class="badge bg-secondary fw-normal">{{ $annonce->categorie->nom }}</span></small>
@@ -91,12 +92,18 @@
                         </div>
                         <div class="list-group">
                             @forelse ($reservations as $reservation)
+
+                                <a href="{{ route('reservations.show', $reservation) }}" class="list-group-item list-group-item-action">
                                 <div class="list-group-item">
                                     <div class="d-flex w-100 justify-content-between">
                                         <h5 class="mb-1">{{ $reservation->salle->nom ?? 'Salle non spécifiée' }}</h5>
                                         <small class="text-success fw-bold">{{ \Carbon\Carbon::parse($reservation->date_debut )->format('d/m/Y') }}</small>
                                     </div>
                                     <p class="mb-1 text-muted">Motif : "{{ $reservation->motif }}"</p>
+                                    <!-- statut de la réservation -->
+                                    <p><strong>Statut :</strong> {{ ucfirst($reservation->statut) }}</p>
+                                
+                                
                                 </div>
                             @empty
                                 <div class="list-group-item text-center">
