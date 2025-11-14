@@ -29,10 +29,7 @@ class Annonce extends Model
         'date_evenement' => 'date',
     ];
 
-    public function user()
-    {
-        return $this->belongsTo(User::class, 'auteur_id');
-    }
+    
     public function auteur()
     {
         return $this->belongsTo(User::class, 'auteur_id');
@@ -46,5 +43,18 @@ class Annonce extends Model
     public function salle()
     {
         return $this->belongsTo(Salle::class, 'salle_id');
+    }
+
+    /**
+     * Récupère les modèles Equipement basés sur les IDs stockés dans la colonne JSON.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getEquipementsDetailsAttribute()
+    {
+        if (empty($this->equipements)) {
+            return collect(); // Retourne une collection vide si aucun équipement
+        }
+        return Equipement::whereIn('id', $this->equipements)->get();
     }
 }

@@ -18,6 +18,7 @@ class UserSeeder extends Seeder
             [
                 'name' => 'Admin Principal',
                 'email' => 'admin@campusconnect.com',
+                'email_verified_at' => now(),
                 'password' => Hash::make('admin123'),
                 'role_id' => 1, // admin
                 'created_at' => now(),
@@ -26,6 +27,7 @@ class UserSeeder extends Seeder
             [
                 'name' => 'Professeur Dupont',
                 'email' => 'dupont@campusconnect.com',
+                'email_verified_at' => now(),
                 'password' => Hash::make('enseignant123'),
                 'role_id' => 2, // enseignant
                 'created_at' => now(),
@@ -34,6 +36,7 @@ class UserSeeder extends Seeder
             [
                 'name' => 'Étudiant Diallo',
                 'email' => 'diallo@campusconnect.com',
+                'email_verified_at' => now(),
                 'password' => Hash::make('etudiant123'),
                 'role_id' => 3, // étudiant
                 'created_at' => now(),

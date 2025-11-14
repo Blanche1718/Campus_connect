@@ -73,6 +73,21 @@ class ReservationController extends Controller
 
     public function supprimer (Reservation $reservation) {
         $reservation->delete() ;
-        return redirect()->route('index') ;}
+        return redirect()->route('index') ;
+    }
+    // recupérer les réservations d'un utilisateur donné
+    public function reservationsParEnseignant($userId){
+
+        return Reservation::where('user_id', $userId)->get();
+
+        }
+
+    public function show(Reservation $reservation)
+    {
+        return view('reservations.show', compact('reservation'));
+    }
+
+
+
 
 }

@@ -8,7 +8,7 @@ use App\Models\Equipement;
 use App\Models\Salle;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Facades\DB;
+
 
 
 /**
@@ -30,9 +30,6 @@ class AnnonceFactory extends Factory
      */
     public function definition(): array
     {
-        $categorieId = DB::table('categories')->inRandomOrder()->value('id') ?? null;
-        $auteurId = DB::table('users')->inRandomOrder()->value('id') ?? 1;
-        $salleId = DB::table('salles')->inRandomOrder()->value('id') ?? null;
         // Récupère des IDs d'équipements existants pour les lier à l'annonce
         $equipementIds = Equipement::pluck('id')->toArray();
         $randomEquipements = $this->faker->randomElements(
@@ -42,12 +39,12 @@ class AnnonceFactory extends Factory
 
         return [
             'titre' => $this->faker->sentence(4),
-            'contenu' => $this->faker->paragraphs(3, true),
-            'categorie_id' => Category::inRandomOrder()->first()->id,
-            'auteur_id' => User::inRandomOrder()->first()->id,
+            'contenu' => $this->faker->paragraphs(rand(2, 4), true),
+            'categorie_id' => $this->faker->randomElement(Category::pluck('id')->toArray()),    
+            'auteur_id' => User::factory(),
             'date_publication' => $this->faker->dateTimeThisMonth(),
             'date_evenement' => $this->faker->dateTimeBetween('+1 week', '+3 months'),
-            'salle_id' => Salle::inRandomOrder()->first()->id,
+            'salle_id' => Salle::factory(),
             'equipements' => $randomEquipements,
         ];
     }

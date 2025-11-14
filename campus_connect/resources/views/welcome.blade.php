@@ -184,10 +184,20 @@
                     <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
                 </ul>
                 <!-- afficher le bouton Mon espace uniquement aux admins et aux enseignants -->
-                <div class="ms-3">
+                <div class="ms-3 d-flex align-items-center">
                     @if (Route::has('login'))
                         @auth
-                            <a href="{{ url('/dashboard') }}" class="btn btn-primary">Mon Espace</a>
+                            {{-- On vérifie le rôle de l'utilisateur et on affiche le lien correspondant --}}
+                            @if(Auth::user()->role->nom === 'admin')
+                                <a href="{{ route('dashboard') }}" class="btn btn-primary me-2">Mon Espace</a>
+                            @elseif(Auth::user()->role->nom === 'enseignant')
+                                <a href="{{ route('dashboard.enseignant') }}" class="btn btn-primary me-2">Mon Espace</a>
+                            @endif
+                            
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button type="submit" class="btn btn-outline-secondary">Se Déconnecter</button>
+                            </form>
                         @else
                             <a href="{{ route('login') }}" class="btn btn-outline-primary me-2">Se Connecter</a>
                             @if (Route::has('register'))
@@ -220,12 +230,15 @@
                         <span class="badge bg-primary-soft bg-opacity-10 text-primary mb-2 align-self-start">{{ $annonce->categorie ->nom ?? 'Non classé' }}</span>
                         <h5 class="card-title">{{ $annonce->titre }}</h5>
                         <p class="card-text text-muted">{{ Str::limit($annonce->contenu, 80) }}</p>
+                        <!-- Bouton "Voir plus"-->
+                        <a href="{{ route('annonces.show', $annonce->id) }}" class="btn btn-sm btn-outline-primary mt-3">Voir plus</a>
                     </div>
                     <div class="card-footer">
-                        Publié par {{ $annonce->user->name ?? 'Anonyme' }}
+                        Publié par {{ $annonce->auteur ->name?? 'Anonyme' }}
                         <br>
                         <time datetime="{{ $annonce->created_at->toIso8601String() }}">{{ $annonce->created_at->translatedFormat('d M Y') }}</time>
                     </div>
+                   
                 </div>
             </div>
             @empty

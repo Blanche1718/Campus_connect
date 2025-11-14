@@ -6,6 +6,8 @@ use Illuminate\Database\Seeder;
 use App\Models\Annonce;
 
 
+
+
 class AnnonceSeeder extends Seeder
 {
     /**
@@ -13,7 +15,7 @@ class AnnonceSeeder extends Seeder
      */
     public function run(): void
     {
-        // Crée 15 annonces — ajuste le count si besoin
+        // Crée 15 annonces — ajuste le count si besoiœn
         Annonce::factory()->count(15)->create();
     }
 }
