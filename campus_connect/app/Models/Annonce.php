@@ -21,9 +21,13 @@ class Annonce extends Model
         'date_publication',
         'date_evenement',
         'salle_id',
-        'equipement_id',
+        'equipements', // On ajoute la nouvelle colonne
     ];
-
+    protected $casts = [
+        'equipements' => 'array',
+        'date_publication' => 'datetime', // Doit correspondre au type de la BDD (dateTime)
+        'date_evenement' => 'date',
+    ];
 
     public function user()
     {
@@ -42,10 +46,5 @@ class Annonce extends Model
     public function salle()
     {
         return $this->belongsTo(Salle::class, 'salle_id');
-    }
-
-    public function equipement()
-    {
-        return $this->belongsTo(Equipement::class, 'equipement_id');
     }
 }

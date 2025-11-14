@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\AnnonceRequest;
 use App\Models\Annonce;
 use App\Models\Category;
+use App\Models\Equipement;
+use App\Models\Salle;
+use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -24,8 +27,10 @@ class AnnonceController extends Controller
     public function create () {
         //Recuperation des categories pour en faire une liste de selection dans la vue
         $categories = Category::all() ;
+        $salles = Salle::all() ;
+        $equipements = Equipement::all() ;
         
-        return view ('annonces.create' , compact('categories')); //reservée au enseignants et admins
+        return view ('annonces.create' , compact('categories', 'salles', 'equipements')); //reservée au enseignants et admins
     }
 
 
@@ -40,16 +45,19 @@ class AnnonceController extends Controller
         $annonce->contenu = $request->contenu ;
         $annonce->categorie_id = $request->categorie_id ;
         $annonce->auteur_id = auth()->user()->id ;
-        $annonce->salle_id = $request->salle_id ;
-        $annonce->equipement_id = $request->equipement_id ;
+        $annonce->salle_id = $request->salle_id;
+        
+        // Filtrer les valeurs nulles ou vides et stocker le tableau d'IDs
+        $annonce->equipements = array_filter($request->input('equipements', []));
+
         $annonce->date_publication = now();
         $annonce->date_evenement = $request->date_evenement;
 
         try {
             $annonce->save() ;
+
             return redirect()->back()->with('succes' , "Votre annonce a bien été publiée !") ;
         } catch (Exception $e) {
-            dd($e->getMessage()) ;
             return redirect()->back()->withInput() ;//
         }
         

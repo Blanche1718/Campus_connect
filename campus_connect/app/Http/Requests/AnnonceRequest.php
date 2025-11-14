@@ -29,7 +29,8 @@ class AnnonceRequest extends FormRequest
             'date_publication'=>'nullable' ,
             'date_evenement'=>'nullable|after_or_equal:today' , 
             'salle_id'=>'nullable|exists:salles,id' ,
-            'equipement_id'=>'nullable|exists:equipements,id ' ,
+            'equipements'=>'nullable|array' ,
+            'equipements.*'=>'nullable|exists:equipements,id'
 
         ];
     }
@@ -43,7 +44,8 @@ class AnnonceRequest extends FormRequest
             'categorie_id.exists'=>"Categorie inexistante !" ,
             'date_evenement.after_or_equal'=>"La date d'évenement ne peut être anterieure à la date d'aujourd'hui !" ,
             'salle_id.exists'=>"Salle inexistante !" ,
-            'equipement_id.exists'=>"Equipement inexistant !" ,
+            'equipements.array'=> "Format invalide !" ,
+            'equipements.*.exists'=> 'Equipement inexistant !',
             ''
             ] ;
     }

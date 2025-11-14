@@ -115,22 +115,27 @@
                 <label for="salle_id"><strong>Sélectionnez une salle si concernée</strong></label>
                 <select name="salle_id" class="form-select @error('salle_id') is-invalid @enderror">
                     <option value="">--Sélectionnez une salle--</option>
-                    @foreach ($categories as $categorie) <option value="{{$categorie->id}}">{{$categorie->nom}}</option>
+                    @foreach ($salles as $salle) <option value="{{$salle->id}}">{{$salle->nom}}</option>
                     @endforeach
                 </select>
                 @error('salle_id') <div class="text-danger small">{{$message}}</div> @enderror
             </div>
 
 
-            <div>
-                <label for="equipement_id"><strong>Sélectionnez les équipements concernés: </strong></label>
-                <select name="equipement_id" class="form-select @error('equipement_id') is-invalid @enderror">
-                    <option value="">--Sélectionnez les équipements--</option>
-                    @foreach ($categories as $categorie) <option value="{{$categorie->id}}" {{old('categorie_id')==$categorie->id ? 'selected':''}}>{{$categorie->nom}}</option>
-                    @endforeach
-                </select>
-                @error('equipement_id') <div class="text-danger small">{{$message}}</div> @enderror
+            <div id="equipements-container">
+                <label><strong>Sélectionnez les équipements concernés:</strong></label>
+                <div class="input-group mb-2">
+                    <select name="equipements[]" class="form-select @error('equipements.*') is-invalid @enderror">
+                        <option value="">--Sélectionnez un équipement--</option>
+                        @foreach ($equipements as $equipement)
+                            <option value="{{$equipement->id}}">{{$equipement->nom}}</option>
+                        @endforeach
+                    </select>
+                    <button type="button" class="btn btn-danger" onclick="this.parentElement.remove()">-</button>
+                </div>
+                @error('equipements.*') <div class="text-danger small">{{$message}}</div> @enderror
             </div>
+            <button type="button" id="add-equipement-btn" class="btn btn-outline-secondary align-self-start">Ajouter un autre équipement</button>
 
             <div class="d-flex gap-3 justify-content-end pt-3">
                 <a href="{{route('dashboard')}}" class="btn btn-outline-danger"> <i class="bi bi-x-circle"></i> Abandonner la publication</a>
@@ -138,6 +143,29 @@
             </div>
         </div>
     </form>
+
+    <script>
+        document.getElementById('add-equipement-btn').addEventListener('click', function() {
+            const container = document.getElementById('equipements-container');
+            const newSelectGroup = document.createElement('div');
+            newSelectGroup.classList.add('input-group', 'mb-2');
+
+            // Cloner la première liste déroulante pour garder les options
+            const firstSelect = container.querySelector('select');
+            const newSelect = firstSelect.cloneNode(true);
+            newSelect.value = ''; // Réinitialiser la sélection
+
+            const removeBtn = document.createElement('button');
+            removeBtn.type = 'button';
+            removeBtn.classList.add('btn', 'btn-danger');
+            removeBtn.textContent = '-';
+            removeBtn.onclick = function() { this.parentElement.remove(); };
+
+            newSelectGroup.appendChild(newSelect);
+            newSelectGroup.appendChild(removeBtn);
+            container.appendChild(newSelectGroup);
+        });
+    </script>
 </body>
 </html>
 </x-app-layout>

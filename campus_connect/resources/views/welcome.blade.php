@@ -52,7 +52,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(15, 23, 42, 0.5);
+            background: rgba(50, 50, 150, 0.6); /* Overlay color */
         }
 
         .hero-content {
@@ -170,7 +170,7 @@
     <nav class="navbar navbar-expand-lg sticky-top">
         <div class="container">
             <a class="navbar-brand fw-bold text-primary" href="#">
-                <img src="{{ asset('storage/photos/log.png') }}" alt="Logo" style="width: 50px; height: 50px;" class="me-2">
+                <img src="{{ asset('images/logo.png') }}" alt="Logo" style="width: 50px; height: 50px;" class="me-2">
                 CampusConnect
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -183,7 +183,18 @@
                     <li class="nav-item"><a class="nav-link" href="#">Actualités</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
                 </ul>
-                <a href="{{ route('login') }}" class="btn btn-primary ms-lg-3">Mon Espace</a>
+                <!-- afficher le bouton Mon espace uniquement aux admins et aux enseignants -->
+                <div class="ms-3">
+                    @if (Route::has('login'))
+                        @auth
+                            <a href="{{ url('/dashboard') }}" class="btn btn-primary">Mon Espace</a>
+                        @else
+                            <a href="{{ route('login') }}" class="btn btn-outline-primary me-2">Se Connecter</a>
+                            @if (Route::has('register'))
+                                <a href="{{ route('register') }}" class="btn btn-primary">S'inscrire</a>
+                            @endif
+                        @endauth
+                    @endif
             </div>
         </div>
     </nav>
@@ -192,7 +203,7 @@
     <header class="hero">
         <div class="hero-content">
             <h1>L’Information Universitaire Centralisée</h1>
-            <p>Restez connecté à la vie du campus. Consultez les dernières annonces, réservez des salles et ne manquez aucun événement important.</p>
+            <p>Restez connecté à la vie du campus. Consultez les dernières annonces, pour ne manquer aucun événement important.</p>
         </div>
     </header>
 
@@ -230,7 +241,7 @@
     </main>
 
 
-    <!-- Section Accès Rapide -->
+    <!-- Section Accès Rapide
     <section class="py-5" style="background-color: #ffffff;">
         <div class="container text-center">
             <h2 class="section-title">⚡ Accès Rapide</h2>
@@ -262,6 +273,7 @@
             </div>
         </div>
     </section>
+     -->
 
     <!-- Footer -->
     <footer class="py-4">
