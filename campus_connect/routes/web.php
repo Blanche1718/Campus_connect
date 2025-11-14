@@ -34,6 +34,18 @@ Route::get('/dashboard', function () {
     $recentAnnonces = Annonce::with(['auteur','categorie'])->latest('date_publication')->take(8)->get();
     return view('dashboard', compact('stats','recentAnnonces'));
 })->middleware(['auth', 'role:admin'])->name('dashboard');
+// Dashboard enseignant
+
+Route::get('/dash_enseignant', function () {
+    $user = auth()->user();
+    $stats = [
+        'mes_annonces' => Annonce::where('auteur_id', $user->id)->count(),
+        'mes_reservations' => Reservation::where('user_id', $user->id)->count(),
+    ];
+    $annonces = Annonce::with(['categorie'])->where('auteur_id', $user->id)->get();
+    $reservations = Reservation::with(['salle', 'equipement'])->where('user_id', $user->id)->get();
+    return view('dash_enseignant', compact('stats', 'annonces', 'reservations'));
+})->middleware(['auth', 'role:enseignant'])->name('dashboard.enseignant');
 
 // Routes pour le profil utilisateur
 Route::middleware('auth')->group(function () {
@@ -45,17 +57,25 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::resource('users', UserController::class)->except(['show']);
 });
+// Route pour afficher les annonces d'un enseignant précis
+Route:: get('/enseignants/{id}/annonces', function ($id) {
+    $enseignant = User::findOrFail($id);
+    $annonces = Annonce::where('auteur_id', $id)->with('categorie', 'salle')->orderBy('date_publication', 'desc')->get();
+    return view('enseignants.annonces', compact('enseignant', 'annonces'));
+})->middleware('auth')->name('enseignants.annonces');
 
 
 // Routes pour les Annonces
 Route::prefix('annonces')->name('annonces.')->controller(AnnonceController::class)->group(function () {
-    // Accessible à tous les utilisateurs connectés
-    Route::get('/', 'index')->name('index')->middleware('auth');
+    
     // Accessible uniquement aux enseignants et admins
     Route::middleware(['auth', 'role:admin,enseignant'])->group(function() {
         Route::get('/create', 'create')->name('create');
         Route::post('/store', 'store')->name('store');
     });
+    Route::get('/{annonce}', 'show')->name('show')->middleware('auth');
+    // Accessible à tous les utilisateurs connectés
+    Route::get('/', 'index')->name('index')->middleware('auth');
 });
 
 // Routes pour la gestion des catégories, salles et équipements (admin uniquement)

@@ -25,8 +25,4 @@ class Equipement extends Model
         'disponibilite' => 'boolean',
     ];
 
-    public function annonces()
-    {
-        return $this->hasMany(\App\Models\Annonce::class, 'equipement_id');
-    }
 }
