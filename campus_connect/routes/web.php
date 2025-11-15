@@ -34,6 +34,7 @@ Route::get('/dashboard', function () {
     $recentAnnonces = Annonce::with(['auteur','categorie'])->latest('date_publication')->take(8)->get();
     return view('dashboard', compact('stats','recentAnnonces'));
 })->middleware(['auth', 'role:admin'])->name('dashboard');
+
 // Dashboard enseignant
 
 Route::get('/dash_enseignant', function () {
@@ -85,35 +86,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::resource('equipements', EquipementController::class)->except(['show']);
 });
 
-// Routes pour les catégories
-Route::prefix('categories')->controller(CategorieController::class)->group(function () {
-    Route::get('/', 'index')->name('categories.index');
-    Route::get('/create', 'create')->name('categories.create');
-    Route::post('/store', 'store')->name('categories.store');
-    // Route::get('/{category}/edit', 'edit')->name('categories.edit');
-    // Route::put('/{category}', 'update')->name('categories.update');
-    // Route::delete('/{category}', 'destroy')->name('categories.destroy');
-});
 
-//Les salles
-Route::prefix('salles')->controller(SalleController::class)->group(function (){
-    Route::get('/' , 'index')->name('salles.index') ;
-    Route::get('/create' , 'create')->name('salles.create') ;
-    Route::post('/store' , 'store')->name('salles.store') ;
-    // Route::get('/{salle}/edit' , 'edit')->name('salles.edit') ;
-    // Route::put('/{salle}' , 'update')->name('salles.update') ;
-    // Route::delete('/{salle}' , 'destroy')->name('salles.destroy') ;
-}) ;    
-
-//Les équipements
-Route::prefix('equipements')->controller(EquipementController::class)->group(function (){
-    Route::get('/' , 'index')->name('equipements.index') ;
-    Route::get('/create' , 'create')->name('equipements.create') ;
-    Route::post('/store' , 'store')->name('equipements.store') ;
-    // Route::get('/{equipement}/edit' , 'edit')->name('equipements.edit') ;
-    // Route::put('/{equipement}' , 'update')->name('equipements.update') ;
-    // Route::delete('/{equipement}' , 'destroy')->name('equipements.destroy') ;
-}) ;
 
 //Les réservations
 Route::prefix('reservations')->controller(ReservationController::class)->group(function (){

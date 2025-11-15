@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AnnonceRequest;
+use App\Jobs\PublierAnnoncesJob;
+use App\Jobs\PublishAnnonceJob;
 use App\Models\Annonce;
 use App\Models\Category;
 use App\Models\Equipement;
@@ -78,11 +80,15 @@ class AnnonceController extends Controller
 
         try {
             $annonce->save() ;
+            //  Dispatch du job pour qu'il s'exécut à la date de publication planifiée
+            PublierAnnoncesJob::dispatch($annonce->id)
+                                ->delay(Carbon::parse($annonce->date_publication));
 
+            //Rediretion
             return redirect()->back()->with('succes' , "Votre annonce a bien été publiée !") ;
-        } catch (Exception $e) {
-            return redirect()->back()->withInput() ;//
-        }
+            } catch (Exception $e) {
+                return redirect()->back()->withInput() ;//
+            }
         
     }
 
