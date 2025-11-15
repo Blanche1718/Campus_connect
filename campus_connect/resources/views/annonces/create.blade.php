@@ -73,6 +73,7 @@
 </head>
 <body>
 
+    {{now()}}
     <form action="{{route('annonces.store')}}" method="POST" class="form-group d-flex flex-column align-items-center">
         @csrf
 
@@ -137,9 +138,27 @@
             </div>
             <button type="button" id="add-equipement-btn" class="btn btn-outline-secondary align-self-start">Ajouter un autre équipement</button>
 
+
+            <!-- Choix de l'option de publication -->
+            <div class="d-flex gap-3">
+                <label>
+                    <input type="radio" name="type_publication" value="maintenant" checked>
+                    Publier maintenant
+                </label>
+                <label>
+                    <input type="radio" name="type_publication" value="planifier">
+                    Planifier la publication
+                </label>
+            </div>
+
+            <!-- Champ Date/Heure (initialement masqué) -->
+            <div id="dateHeureContainer" style="display: none;">
+                <label for="date_publication">Date et Heure de publication</label>
+                <input type="datetime-local" class="form-control" name="date_publication" id="date_publication" value="{{ old('date_publication') }}">
+            </div>
             <div class="d-flex gap-3 justify-content-end pt-3">
-                <a href="{{route('dashboard')}}" class="btn btn-outline-danger"> <i class="bi bi-x-circle"></i> Abandonner la publication</a>
-                <input type="submit" name="submit" class="btn btn-primary" value="Publier l'annonce" >
+                <a href="{{route('dashboard')}}" class="btn btn-outline-danger"> <i class="bi bi-x-circle"></i> Abandonner </a>
+                <input type="submit" name="submit" class="btn btn-primary" value="Terminer" >
             </div>
         </div>
     </form>
@@ -164,6 +183,27 @@
             newSelectGroup.appendChild(newSelect);
             newSelectGroup.appendChild(removeBtn);
             container.appendChild(newSelectGroup);
+        });
+
+            // Ciblage des éléments
+        const annonceForm = document.getElementById('annonceForm');
+        const dateHeureContainer = document.getElementById('dateHeureContainer');
+        const datePublicationInput = document.getElementById('date_publication');
+        const radioButtons = document.querySelectorAll('input[name="type_publication"]');
+
+        // Écoute des changements sur les boutons radio pour afficher/masquer le champ date
+        radioButtons.forEach(radio => {
+            radio.addEventListener('change', function() {
+                if (this.value === 'planifier') {
+                    dateHeureContainer.style.display = 'block';
+                    // Rendre le champ requis si planifié
+                    datePublicationInput.setAttribute('required', true); 
+                } else {
+                    dateHeureContainer.style.display = 'none';
+                    // Retirer l'attribut requis si publication immédiate
+                    datePublicationInput.removeAttribute('required');
+                }
+            });
         });
     </script>
 </body>

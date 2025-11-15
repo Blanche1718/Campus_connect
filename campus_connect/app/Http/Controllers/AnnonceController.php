@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AnnonceRequest;
+use App\Jobs\PublierAnnoncesJob;
+use App\Jobs\PublishAnnonceJob;
 use App\Models\Annonce;
 use App\Models\Category;
 use App\Models\Equipement;
 use App\Models\Salle;
 use App\Models\User;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -90,16 +93,31 @@ class AnnonceController extends Controller
         // Filtrer les valeurs nulles ou vides et stocker le tableau d'IDs
         $annonce->equipements = array_filter($request->input('equipements', []));
 
-        $annonce->date_publication = now();
+        // Logique de définition du statut et de la date
+        if ($request->input('type_publication') === 'maintenant') {
+            
+            $annonce->date_publication = Carbon::now();
+            $annonce->statut = 'publiee'; 
+
+        } elseif ($request->input('type_publication') === 'planifier') {
+            
+            $annonce->date_publication = $request->date_publication ;
+            $annonce->statut = 'planifiee'; 
+        }
+                       
         $annonce->date_evenement = $request->date_evenement;
 
         try {
             $annonce->save() ;
+            //  Dispatch du job pour qu'il s'exécut à la date de publication planifiée
+            PublierAnnoncesJob::dispatch($annonce->id)
+                                ->delay(Carbon::parse($annonce->date_publication));
 
+            //Rediretion
             return redirect()->back()->with('succes' , "Votre annonce a bien été publiée !") ;
-        } catch (Exception $e) {
-            return redirect()->back()->withInput() ;//
-        }
+            } catch (Exception $e) {
+                return redirect()->back()->withInput() ;//
+            }
         
     }
 

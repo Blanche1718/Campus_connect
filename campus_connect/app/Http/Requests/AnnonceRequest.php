@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class AnnonceRequest extends FormRequest
 {
@@ -30,7 +31,9 @@ class AnnonceRequest extends FormRequest
             'date_evenement'=>'nullable|after_or_equal:today' , 
             'salle_id'=>'nullable|exists:salles,id' ,
             'equipements'=>'nullable|array' ,
-            'equipements.*'=>'nullable|exists:equipements,id'
+            'equipements.*'=>'nullable|exists:equipements,id' ,
+            'type_publication'=>['required' , Rule::in(['maintenant' , 'planifier'])] ,
+            'date_publication'=>['nullable' ,  'date', 'after_or_equal:now' , Rule::requiredIf($this->input('type_publication')==='planifier')],
 
         ];
     }

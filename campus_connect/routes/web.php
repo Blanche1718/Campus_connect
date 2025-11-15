@@ -36,6 +36,7 @@ Route::get('/dashboard', function () {
     $recentAnnonces = Annonce::with(['auteur','categorie'])->latest('date_publication')->take(8)->get();
     return view('dashboard', compact('stats','recentAnnonces'));
 })->middleware(['auth', 'role:admin'])->name('dashboard');
+
 // Dashboard enseignant
 
 Route::get('/dash_enseignant', function () {
@@ -88,15 +89,6 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::resource('equipements', EquipementController::class)->except(['show']);
 });
 
-// Routes pour les catégories
-Route::prefix('categories')->controller(CategorieController::class)->group(function () {
-    Route::get('/', 'index')->name('categories.index');
-    Route::get('/create', 'create')->name('categories.create');
-    Route::post('/store', 'store')->name('categories.store');
-    // Route::get('/{category}/edit', 'edit')->name('categories.edit');
-    // Route::put('/{category}', 'update')->name('categories.update');
-    // Route::delete('/{category}', 'destroy')->name('categories.destroy');
-});
 
 //Les salles
 Route::prefix('salles')->controller(SalleController::class)->group(function (){
