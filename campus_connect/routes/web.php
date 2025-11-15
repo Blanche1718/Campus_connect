@@ -14,6 +14,8 @@ use App\Http\Controllers\CategorieController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\SalleController;
 use App\Http\Controllers\UserController;
+use App\Models\Role;
+
 require __DIR__.'/auth.php';
 
 Route::get('/', function () {
@@ -70,6 +72,11 @@ Route:: get('/enseignants/{id}/annonces', function ($id) {
 Route::prefix('annonces')->name('annonces.')->controller(AnnonceController::class)->group(function () {
     
     // Accessible uniquement aux enseignants et admins
+    Route::middleware(['auth' , 'role:admin'])->group(function (){
+        Route::get('edit/{annonce}' , 'edit')->name('edit') ;
+        Route::put('update/{annonce}' , 'update')->name('update') ;
+        Route::delete('destroy/{annonce}' , 'destroy')->name('destroy') ;
+    }) ;
     Route::middleware(['auth', 'role:admin,enseignant'])->group(function() {
         Route::get('/create', 'create')->name('create');
         Route::post('/store', 'store')->name('store');

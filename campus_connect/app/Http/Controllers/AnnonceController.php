@@ -81,8 +81,7 @@ class AnnonceController extends Controller
         try {
             $annonce->save() ;
             //  Dispatch du job pour qu'il s'exécut à la date de publication planifiée
-            PublierAnnoncesJob::dispatch($annonce->id)
-                                ->delay(Carbon::parse($annonce->date_publication));
+            PublierAnnoncesJob::dispatch($annonce->id)->delay(Carbon::parse($annonce->date_publication));
 
             //Rediretion
             return redirect()->back()->with('succes' , "Votre annonce a bien été publiée !") ;
@@ -104,5 +103,59 @@ class AnnonceController extends Controller
                             ->orderBy('date_publication', 'desc')
                             ->get();
         return view('enseignants.annonces', compact('annonces'));
+    }
+
+    //Suppression d'annonce (Admin seul)
+    public function destroy(Annonce $annonce) {
+        if(auth()->id() != 1) {
+        abort(403 , "ACCES INTERDIT !") ;
+        }
+        $annonce->delete() ;
+        return redirect()->back()->with('succes' , 'Annonce Supprimée') ;
+    }
+
+    //Mise à jours
+    public function edit (Annonce $annonce) {
+        //Recuperation des categories pour en faire une liste de selection dans la vue
+        $categories = Category::all() ;
+        $salles = Salle::all() ;
+        $equipements = Equipement::all() ;
+        
+        return view ('annonces.update' , compact('annonce' ,'categories', 'salles', 'equipements'));
+    }
+
+    public function update (Request $request , Annonce $annonce) {
+
+        $annonce->titre = $request->titre ;
+        $annonce->contenu = $request->contenu ;
+        $annonce->categorie_id = $request->categorie_id ;
+        $annonce->salle_id = $request->salle_id;
+        // Filtrer les valeurs nulles ou vides et stocker le tableau d'IDs
+        $annonce->equipements = array_filter($request->input('equipements', []));
+
+        // Logique de définition du statut et de la date
+        if ($request->input('type_publication') === 'maintenant') {
+            
+            $annonce->date_publication = Carbon::now();
+            $annonce->statut = 'publiee'; 
+
+        } elseif ($request->input('type_publication') === 'planifier') {
+            
+            $annonce->date_publication = $request->date_publication ;
+            $annonce->statut = 'planifiee'; 
+        }
+                       
+        $annonce->date_evenement = $request->date_evenement;
+
+        try {
+            $annonce->update() ;
+            //  Dispatch du job pour qu'il s'exécut à la date de publication planifiée
+            PublierAnnoncesJob::dispatch($annonce->id)->delay(Carbon::parse($annonce->date_publication));
+
+            //Rediretion
+            return redirect()->back()->with('succes' , "Votre annonce a bien été publiée !") ;
+            } catch (Exception $e) {
+                return redirect()->back()->withInput() ;//
+            }
     }
 }
