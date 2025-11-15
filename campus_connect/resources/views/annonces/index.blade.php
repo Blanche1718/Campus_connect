@@ -100,7 +100,7 @@
             </header>
 
             <!-- Section de Filtre -->
-            <div class="filter-card">
+            <!-- <div class="filter-card">
                 <form action="{{ route('annonces.index') }}" method="GET" class="row g-3 align-items-center">
                     <div class="col-md-9">
                         <label for="categorie_id" class="form-label fw-semibold">Filtrer par catégorie</label>
@@ -122,8 +122,72 @@
                         @endif
                     </div>
                 </form>
-            </div>
+            </div> -->
 
+        {{-- FILTER BAR --}}
+        <div class="bg-white shadow-md rounded-xl p-6 mb-10">
+            <form method="GET" action="{{ route('annonces.index') }}" class="grid grid-cols-1 md:grid-cols-4 gap-6">
+
+                {{-- CATÉGORIE --}}
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Catégorie</label>
+                    <select name="categorie_id" class="w-full rounded-lg border-gray-300">
+                        <option value="">Toutes les catégories</option>
+                        @foreach ($categories as $categorie)
+                            <option value="{{ $categorie->id }}" @selected(request('categorie_id') == $categorie->id)>
+                                {{ $categorie->nom }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                {{-- AUTEUR --}}
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Auteur</label>
+                    <select name="auteur_id" class="w-full rounded-lg border-gray-300">
+                        <option value="">Tous les auteurs</option>
+                        @foreach ($auteurs as $auteur)
+                            <option value="{{ $auteur->id }}" @selected(request('auteur_id') == $auteur->id)>
+                                {{ $auteur->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                {{-- DATE --}}
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Date</label>
+                    <input type="date" name="date_publication" value="{{ request('date_publication') }}"
+                           class="w-full rounded-lg border-gray-300">
+                </div>
+
+                {{-- TRI --}}
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Trier par</label>
+                    <select name="tri" class="w-full rounded-lg border-gray-300">
+                        <option value="">Par défaut</option>
+                        <option value="recent" @selected(request('tri')=='recent')>Plus récent → ancien</option>
+                        <option value="ancien" @selected(request('tri')=='ancien')>Plus ancien → récent</option>
+                    </select>
+                </div>
+
+                {{-- ACTIONS --}}
+                <div class="md:col-span-4 flex gap-4">
+                    <button type="submit"
+                        class="px-6 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition">
+                        Filtrer
+                    </button>
+
+                    @if(request()->anyFilled(['categorie_id','auteur_id','date_publication','tri']))
+                        <a href="{{ route('annonces.index') }}"
+                           class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">
+                            Réinitialiser
+                        </a>
+                    @endif
+                </div>
+
+            </form>
+        </div>
             <!-- Liste des Annonces -->
             <div class="row gy-5">
                 @forelse ($annonces as $annonce)

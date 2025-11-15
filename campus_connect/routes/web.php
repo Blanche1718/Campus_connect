@@ -18,7 +18,9 @@ require __DIR__.'/auth.php';
 
 Route::get('/', function () {
     $annonces = Annonce::with('categorie', 'auteur')->latest()->take(8)->get();
-    return view('welcome', compact('annonces'));
+    $categories = Category::all();
+    $auteurs = User::all();
+    return view('welcome', compact('annonces', 'categories', 'auteurs'));
 });
 // Dashboard admin
 
@@ -67,7 +69,8 @@ Route:: get('/enseignants/{id}/annonces', function ($id) {
 
 // Routes pour les Annonces
 Route::prefix('annonces')->name('annonces.')->controller(AnnonceController::class)->group(function () {
-    
+    Route::get('/', 'index')->name('index')->middleware('auth');
+
     // Accessible uniquement aux enseignants et admins
     Route::middleware(['auth', 'role:admin,enseignant'])->group(function() {
         Route::get('/create', 'create')->name('create');
@@ -75,7 +78,7 @@ Route::prefix('annonces')->name('annonces.')->controller(AnnonceController::clas
     });
     Route::get('/{annonce}', 'show')->name('show')->middleware('auth');
     // Accessible à tous les utilisateurs connectés
-    Route::get('/', 'index')->name('index')->middleware('auth');
+    
 });
 
 // Routes pour la gestion des catégories, salles et équipements (admin uniquement)
@@ -100,6 +103,8 @@ Route::prefix('salles')->controller(SalleController::class)->group(function (){
     Route::get('/' , 'index')->name('salles.index') ;
     Route::get('/create' , 'create')->name('salles.create') ;
     Route::post('/store' , 'store')->name('salles.store') ;
+    // voici la route pour vérifier la disponibilité d'une salle
+    Route::get('/verifier-disponibilite' , 'verifierDisponibilite')->name('salles.verifierDisponibilite') ;
     // Route::get('/{salle}/edit' , 'edit')->name('salles.edit') ;
     // Route::put('/{salle}' , 'update')->name('salles.update') ;
     // Route::delete('/{salle}' , 'destroy')->name('salles.destroy') ;

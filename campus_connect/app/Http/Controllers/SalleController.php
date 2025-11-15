@@ -4,6 +4,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Annonce;
+use App\Models\Reservation;
 use App\Models\Salle;
 
 class SalleController extends Controller
@@ -35,11 +37,12 @@ class SalleController extends Controller
 
         return redirect()->route('salles.index')->with('success', 'Salle créée');
     }
-
+// editer une salle
     public function edit(Salle $salle)
     {
         return view('salles.edit', compact('salle'));
     }
+// mettre à jour une salle
 
     public function update(Request $request, Salle $salle)
     {
@@ -57,10 +60,51 @@ class SalleController extends Controller
 
         return redirect()->route('salles.index')->with('success', 'Salle mise à jour');
     }
+    // supprimer une salle
 
     public function destroy(Salle $salle)
     {
         $salle->delete();
         return redirect()->route('salles.index')->with('success', 'Salle supprimée');
+    }
+    // voir la disponibilité des salles
+
+    /**
+     * Vérifie la disponibilité actuelle d'une salle et retourne à la page d'accueil avec le résultat.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\View\View
+     */
+    public function verifierDisponibilite(Request $request)
+    {
+        $searchTerm = $request->input('salle_search');
+        $salleResultat = null;
+        $disponibiliteMessage = '';
+
+        if ($searchTerm) {
+            $salleResultat = Salle::where('nom', 'LIKE', "%{$searchTerm}%")->first();
+
+            if ($salleResultat) {
+                // Vérifier s'il y a une réservation en cours pour cette salle
+                $reservationEnCours = Reservation::where('salle_id', $salleResultat->id)
+                    ->where('statut', 'valide') // On ne compte que les réservations validées
+                    ->where('date_debut', '<=', now())
+                    ->where('date_fin', '>=', now())
+                    ->exists();
+
+                if ($reservationEnCours) {
+                    $disponibiliteMessage = "La salle '{$salleResultat->nom}' est actuellement occupée.";
+                } else {
+                    $disponibiliteMessage = "Bonne nouvelle ! La salle '{$salleResultat->nom}' est actuellement libre.";
+                }
+            } else {
+                $disponibiliteMessage = "Désolé, aucune salle correspondant à '{$searchTerm}' n'a été trouvée.";
+            }
+        }
+
+        // On doit recharger les données nécessaires pour la page d'accueil
+        $annonces = Annonce::with('categorie', 'auteur')->latest()->take(4)->get();
+
+        return view('welcome', compact('annonces', 'salleResultat', 'disponibiliteMessage'));
     }
 }
