@@ -157,8 +157,8 @@
                 <input type="datetime-local" class="form-control" name="date_publication" id="date_publication" value="{{ old('date_publication') }}">
             </div>
             <div class="d-flex gap-3 justify-content-end pt-3">
-                <a href="{{route('dashboard')}}" class="btn btn-outline-danger"> <i class="bi bi-x-circle"></i> Abandonner la publication</a>
-                <input type="submit" name="submit" class="btn btn-primary" value="Publier l'annonce" >
+                <a href="{{route('dashboard')}}" class="btn btn-outline-danger"> <i class="bi bi-x-circle"></i> Abandonner </a>
+                <input type="submit" name="submit" class="btn btn-primary" value="Terminer" >
             </div>
         </div>
     </form>
