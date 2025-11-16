@@ -15,6 +15,7 @@ use App\Http\Controllers\CategorieController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\SalleController;
 use App\Http\Controllers\UserController;
+use App\Http\Middleware\EnsurePasswordIsChanged;
 
 
 
@@ -53,7 +54,7 @@ Route::get('/dash_enseignant', function () {
     $annonces = Annonce::with(['categorie'])->where('auteur_id', $user->id)->get();
     $reservations = Reservation::with(['salle', 'equipement'])->where('user_id', $user->id)->get();
     return view('dash_enseignant', compact('stats', 'annonces', 'reservations'));
-})->middleware(['auth', 'role:enseignant'])->name('dashboard.enseignant');
+})->middleware(['auth', 'role:enseignant', EnsurePasswordIsChanged::class])->name('dashboard.enseignant');
 
 // Routes pour le profil utilisateur
 Route::middleware('auth')->group(function () {
