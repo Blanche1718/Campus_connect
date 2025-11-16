@@ -20,8 +20,26 @@ class CategorieController extends Controller
 
     public function store(Request $request)
     {
+
+        //recuperation du nom de catégorie entré par l'utilisateur
+        $nom_categorie = strtolower(trim($request->nom));
+
+        //Suppresion des espaces entre les mots ou caractères
+        $nom_verifie = preg_replace('/\s+/' , '' , $nom_categorie) ;
+
+        //count pour obetenir le nombre de catégorie ayant ce nom  (convertis en minuscules , sans espaces) dans la table
+        $count = Category::whereRaw("LOWER(REPLACE(nom , ' ' , ''))=?",[$nom_verifie])->count();
+
+        //Si  $count > 0 , non soumission et rediraection  
+        if ($count > 0) {
+            return redirect()->back()->withErrors(['categorie_nom'=>"Cette catégorie existe déjà !" ])->withInput();
+        } 
+
         $data = $request->validate([
             'nom' => 'required|string|max:150|unique:categories,nom',
+        ] , [
+            'nom.required' => 'Ce champ est requis !' ,
+            'nom.max' => 'Nom de catégorie trop long !' ,
         ]);
 
         Category::create($data);

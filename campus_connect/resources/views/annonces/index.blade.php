@@ -208,6 +208,19 @@
                                 </div>
 
                                 <p class="ad-content">{{ $annonce->contenu }}</p>
+
+                                @if (auth()->id() == 1)
+                                    <div class="d-flex justify-content-end gap-3 mb-3 ">
+                                        <div>
+                                            <a href="{{route('annonces.edit' , $annonce->id)}}" class="btn btn-info">Modifier</a>
+                                        </div>
+                                        <form action="{{route('annonces.destroy' , $annonce->id)}}" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" ><span class="btn btn-danger">Supprimer</span></button>
+                                        </form>
+                                    </div>
+                                @endif
                             </div>
 
                             <footer class="info-block mt-auto">

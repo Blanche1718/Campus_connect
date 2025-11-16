@@ -9,6 +9,7 @@
                     <label class="form-label">Nom</label>
                     <input type="text" name="nom" class="form-control" value="{{ old('nom') }}" required>
                     @error('nom')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+                    @error('categorie_nom')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
                 </div>
 
                 <div class="d-flex justify-content-end">

@@ -72,8 +72,6 @@
     </style>
 </head>
 <body>
-
-    {{now()}}
     <form action="{{route('annonces.store')}}" method="POST" class="form-group d-flex flex-column align-items-center">
         @csrf
 
@@ -157,6 +155,7 @@
                 <input type="datetime-local" class="form-control" name="date_publication" id="date_publication" value="{{ old('date_publication') }}">
             </div>
             <div class="d-flex gap-3 justify-content-end pt-3">
+                <input type="submit" name="submit" id="submit" class="btn btn-primary" value="Publier maintenant" >
                 <a href="{{route('dashboard')}}" class="btn btn-outline-danger"> <i class="bi bi-x-circle"></i> Abandonner </a>
                 <input type="submit" name="submit" class="btn btn-primary" value="Terminer" >
             </div>
@@ -185,11 +184,12 @@
             container.appendChild(newSelectGroup);
         });
 
-            // Ciblage des éléments
+        // Ciblage des éléments
         const annonceForm = document.getElementById('annonceForm');
         const dateHeureContainer = document.getElementById('dateHeureContainer');
         const datePublicationInput = document.getElementById('date_publication');
         const radioButtons = document.querySelectorAll('input[name="type_publication"]');
+        const btnVlalue = document.getElementById('submit') ;
 
         // Écoute des changements sur les boutons radio pour afficher/masquer le champ date
         radioButtons.forEach(radio => {
@@ -198,10 +198,13 @@
                     dateHeureContainer.style.display = 'block';
                     // Rendre le champ requis si planifié
                     datePublicationInput.setAttribute('required', true); 
+                    btnVlalue.value = "Planifier la publication" ;
                 } else {
                     dateHeureContainer.style.display = 'none';
                     // Retirer l'attribut requis si publication immédiate
                     datePublicationInput.removeAttribute('required');
+                    btnVlalue.value = "Publier maintenant" ;
+
                 }
             });
         });
