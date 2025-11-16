@@ -60,13 +60,13 @@ class ReservationController extends Controller
     }
 
     public function valider (Reservation $reservation) {
-        $reservation->statut = 'valide' ;
+        $reservation->statut = 'validée' ;
         $reservation->update() ;
         return redirect()->route('index') ;
     }
 
     public function rejeter (Reservation $reservation) {
-        $reservation->statut = 'rejete' ;
+        $reservation->statut = 'rejetée' ;
         $reservation->update() ;
         return redirect()->route('index') ;
     }

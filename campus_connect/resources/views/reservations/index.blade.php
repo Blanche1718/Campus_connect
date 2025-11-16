@@ -50,7 +50,7 @@
                             <td>
                                 @if($reservation->statut === 'en_attente')
                                     <span class="badge bg-warning text-dark">En attente</span>
-                                @elseif($reservation->statut === 'valide')
+                                @elseif($reservation->statut === 'validée')
                                     <span class="badge bg-success">Validée</span>
                                 @else
                                     <span class="badge bg-danger">Rejetée</span>
@@ -61,19 +61,19 @@
                                 
                                 @if ($reservation->statut == 'en_attente')
                                     <div class="d-flex flex-row gap-2">
-                                        <form action="{{route('valider_reservation' , $reservation->id)}}" method="POST">
+                                        <form action="{{route('valider' , $reservation->id)}}" method="POST">
                                         @csrf
                                         @method('PATCH')
                                         <button type="submit" name="submit" class="btn btn-sm btn-info">Valider</button>
                                     </form>
 
-                                    <form action="{{route('rejeter_reservation' , $reservation->id)}}" method="POST">
+                                    <form action="{{route('rejeter' , $reservation->id)}}" method="POST">
                                         @csrf
                                         @method('PATCH')
                                         <button type="submit" name="submit" class="btn btn-sm btn-warning">Rejeter</button>
                                     </form>
 
-                                    <form action="{{route('supprimer_reservation' , $reservation->id)}}" method="POST">
+                                    <form action="{{route('reservations.destroy' , $reservation->id)}}" method="POST">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" name="submit" class="btn btn-sm btn-danger">Supprimer</button>
@@ -82,19 +82,19 @@
                                 @elseif ($reservation->statut == 'valide')
                                     <div class="d-flex flex-row gap-2">
 
-                                    <form action="{{route('rejeter_reservation' , $reservation->id)}}" method="POST">
+                                    <form action="{{route('rejeter' , $reservation->id)}}" method="POST">
                                         @csrf
                                         @method('PATCH')
                                         <button type="submit" name="submit" class="btn btn-sm btn-warning">Rejeter</button>
                                     </form>
 
-                                    <form action="{{route('supprimer_reservation' , $reservation->id)}}" method="POST">
+                                    <form action="{{route('reservations.destroy' , $reservation->id)}}" method="POST">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" name="submit" class="btn btn-sm btn-danger">Supprimer</button>
                                     </form>
                                 @else 
-                                        <form action="{{route('supprimer_reservation' , $reservation->id)}}" method="POST">
+                                        <form action="{{route('reservations.destroy' , $reservation->id)}}" method="POST">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" name="submit" class="btn btn-sm btn-danger">Supprimer</button>

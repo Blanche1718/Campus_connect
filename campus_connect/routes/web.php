@@ -17,6 +17,7 @@ use App\Http\Controllers\SalleController;
 use App\Http\Controllers\UserController;
 
 
+
 Route::post('/login', [LoginController::class, 'login'])->name('login');
 
 require __DIR__.'/auth.php';
@@ -88,6 +89,12 @@ Route::get('/salles/verifier-disponibilite' , [SalleController::class, 'verifier
     ->middleware('auth')
     ->name('salles.verifierDisponibilite');
 
+ // Actions réservées à l'admin
+Route::middleware('role:admin')->group(function() {
+    Route::patch('/valider/{reservation}', [ReservationController::class, 'valider'])->name('valider');
+    Route::patch('/rejeter/{reservation}', [ReservationController::class, 'rejeter'])->name('rejeter');
+});
+
 // Routes pour les Réservations reservées aux admins et enseignants
 Route::middleware('auth' , 'role:admin,enseignant')->prefix('reservations')->name('reservations.')->group(function () {
     Route::get('/', [ReservationController::class, 'index'])->name('index');
@@ -97,9 +104,5 @@ Route::middleware('auth' , 'role:admin,enseignant')->prefix('reservations')->nam
     Route::delete('/{reservation}', [ReservationController::class, 'supprimer'])->name('destroy');
 
 
-    // Actions réservées à l'admin
-    Route::middleware('role:admin')->group(function() {
-        Route::patch('/valider/{reservation}', [ReservationController::class, 'valider'])->name('valider');
-        Route::patch('/rejeter/{reservation}', [ReservationController::class, 'rejeter'])->name('rejeter');
-    });
+   
 });
