@@ -147,7 +147,8 @@
                     <select name="auteur_id" class="w-full rounded-lg border-gray-300">
                         <option value="">Tous les auteurs</option>
                         @foreach ($auteurs as $auteur)
-                            <option value="{{ $auteur->id }}" @selected(request('auteur_id') == $auteur->id)>
+                            <option value="{{
+                             $auteur->id }}" @selected(request('auteur_id') == $auteur->id)>
                                 {{ $auteur->name }}
                             </option>
                         @endforeach
@@ -209,7 +210,8 @@
 
                                 <p class="ad-content">{{ $annonce->contenu }}</p>
 
-                                @if (auth()->id() == 1)
+                            @auth
+                                @if (auth()->user()->role->nom == 'admin')
                                     <div class="d-flex justify-content-end gap-3 mb-3 ">
                                         <div>
                                             <a href="{{route('annonces.edit' , $annonce->id)}}" class="btn btn-info">Modifier</a>
@@ -219,8 +221,10 @@
                                             @method('DELETE')
                                             <button type="submit" ><span class="btn btn-danger">Supprimer</span></button>
                                         </form>
-                                    </div>
+                                        </div>
                                 @endif
+                            @endauth
+
                             </div>
 
                             <footer class="info-block mt-auto">

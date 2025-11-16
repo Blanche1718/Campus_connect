@@ -38,8 +38,8 @@ class AnnonceFactory extends Factory
         );
 
         return [
-            'titre' => $this->faker->sentence(4),
-            'contenu' => $this->faker->paragraphs(rand(2, 4), true),
+            'titre' => $this->faker->realText(30),
+            'contenu' => $this->faker->realText(600),
             'categorie_id' => $this->faker->randomElement(Category::pluck('id')->toArray()),    
             'auteur_id' => User::factory(),
             'date_publication' => $this->faker->dateTimeThisMonth(),
