@@ -3,7 +3,6 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use PHPUnit\Framework\Attributes\After;
 
 return new class extends Migration
 {
@@ -13,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            
-            $table->timestamp('email_verified_at')->nullable()->after('email') ;
-            $table->string('remember_token' , 100)->nullable()->after('password') ;
+            // On ajoute un champ booléen après la colonne 'password'
+            // Par défaut, il sera à 'false' (faux).
+            $table->boolean('must_change_password')->default(false)->after('password');
         });
     }
 
@@ -25,11 +24,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            //
-            // Action inverse pour le rollback : on recrée l'ancienne colonne
-            $table->dropColumn('email_verified_at');
-            $table->dropColumn('remember_token');
-            //
+            // Ceci permet de supprimer la colonne si on annule la migration
+            $table->dropColumn('must_change_password');
         });
     }
 };

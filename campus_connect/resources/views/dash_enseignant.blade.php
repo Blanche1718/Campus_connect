@@ -41,7 +41,7 @@
                             <div class="icon icon-annonces"><i class="bi bi-megaphone-fill"></i></div>
                             <div>
                                 <div class="fs-4 fw-bold">{{ $stats['mes_annonces'] }}</div>
-                                <div class="text-muted">Annonces publiées</div>
+                                <div class="text-muted">Vos annonces</div>
                             </div>
                         </div>
                     </div>
@@ -50,7 +50,7 @@
                             <div class="icon icon-reservations"><i class="bi bi-calendar-check-fill"></i></div>
                             <div>
                                 <div class="fs-4 fw-bold">{{ $stats['mes_reservations'] }}</div>
-                                <div class="text-muted">Réservations</div>
+                                <div class="text-muted">Vos reservations</div>
                             </div>
                         </div>
                     </div>

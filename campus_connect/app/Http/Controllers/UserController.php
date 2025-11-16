@@ -5,8 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Role;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
+use Illuminate\Support\Str;
+use App\Mail\WelcomeTeacherMail;
 
 class UserController extends Controller
 {
@@ -43,17 +46,39 @@ class UserController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'password' => ['nullable', 'confirmed', Rules\Password::defaults()], // Le mot de passe est optionnel
             'role_id' => 'required|exists:roles,id',
         ]);
-
-        $user = User::create([
-            'name' => $validatedData['name'],
-            'email' => $validatedData['email'],
-            'password' => Hash::make($validatedData['password']),
-            'role_id' => $validatedData['role_id'],
-        ]);
-
+ 
+        // On vérifie si le rôle est 'enseignant' (ID = 2)
+        if ($validatedData['role_id'] == 2) {
+            // Logique pour les enseignants
+            $temporaryPassword = Str::random(10);
+ 
+            $user = User::create([
+                'name' => $validatedData['name'],
+                'email' => $validatedData['email'],
+                'password' => Hash::make($temporaryPassword),
+                'role_id' => $validatedData['role_id'],
+                'must_change_password' => true,
+            ]);
+ 
+            Mail::to($user->email)->send(new WelcomeTeacherMail($user, $temporaryPassword));
+ 
+        } else {
+            // Logique pour les autres rôles (admin, étudiant, etc.)
+            // Pour ces rôles, le mot de passe est requis
+            $request->validate(['password' => ['required', 'confirmed', Rules\Password::defaults()]]);
+ 
+            $user = User::create([
+                'name' => $validatedData['name'],
+                'email' => $validatedData['email'],
+                'password' => Hash::make($validatedData['password']),
+                'role_id' => $validatedData['role_id'],
+                'must_change_password' => false, // Pas de changement de mot de passe forcé
+            ]);
+        }
+ 
         return redirect()->route('users.index')->with('success', 'Utilisateur créé avec succès.');
     }
 

@@ -15,6 +15,8 @@ use App\Http\Controllers\CategorieController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\SalleController;
 use App\Http\Controllers\UserController;
+use App\Http\Middleware\EnsurePasswordIsChanged;
+
 
 
 Route::post('/login', [LoginController::class, 'login'])->name('login');
@@ -52,7 +54,7 @@ Route::get('/dash_enseignant', function () {
     $annonces = Annonce::with(['categorie'])->where('auteur_id', $user->id)->get();
     $reservations = Reservation::with(['salle', 'equipement'])->where('user_id', $user->id)->get();
     return view('dash_enseignant', compact('stats', 'annonces', 'reservations'));
-})->middleware(['auth', 'role:enseignant'])->name('dashboard.enseignant');
+})->middleware(['auth', 'role:enseignant', EnsurePasswordIsChanged::class])->name('dashboard.enseignant');
 
 // Routes pour le profil utilisateur
 Route::middleware('auth')->group(function () {
@@ -88,6 +90,12 @@ Route::get('/salles/verifier-disponibilite' , [SalleController::class, 'verifier
     ->middleware('auth')
     ->name('salles.verifierDisponibilite');
 
+ // Actions réservées à l'admin
+Route::middleware('role:admin')->group(function() {
+    Route::patch('/valider/{reservation}', [ReservationController::class, 'valider'])->name('valider');
+    Route::patch('/rejeter/{reservation}', [ReservationController::class, 'rejeter'])->name('rejeter');
+});
+
 // Routes pour les Réservations reservées aux admins et enseignants
 Route::middleware('auth' , 'role:admin,enseignant')->prefix('reservations')->name('reservations.')->group(function () {
     Route::get('/', [ReservationController::class, 'index'])->name('index');
@@ -97,9 +105,5 @@ Route::middleware('auth' , 'role:admin,enseignant')->prefix('reservations')->nam
     Route::delete('/{reservation}', [ReservationController::class, 'supprimer'])->name('destroy');
 
 
-    // Actions réservées à l'admin
-    Route::middleware('role:admin')->group(function() {
-        Route::patch('/valider/{reservation}', [ReservationController::class, 'valider'])->name('valider');
-        Route::patch('/rejeter/{reservation}', [ReservationController::class, 'rejeter'])->name('rejeter');
-    });
+   
 });

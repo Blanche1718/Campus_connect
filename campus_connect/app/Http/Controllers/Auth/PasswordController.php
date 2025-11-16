@@ -20,9 +20,17 @@ class PasswordController extends Controller
             'password' => ['required', Password::defaults(), 'confirmed'],
         ]);
 
-        $request->user()->update([
-            'password' => Hash::make($validated['password']),
-        ]);
+        $user = $request->user();
+
+        $user->password = Hash::make($validated['password']);
+
+        // Si l'utilisateur était obligé de changer son mot de passe,
+        // on désactive le drapeau maintenant que c'est fait.
+        if ($user->must_change_password) {
+            $user->must_change_password = false;
+        }
+
+        $user->save();
 
         return back()->with('status', 'password-updated');
     }
