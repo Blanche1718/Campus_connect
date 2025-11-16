@@ -74,7 +74,7 @@
 </head>
 <body>
 
-    <form action="{{route('store_reservation')}}" method="POST" class="form-group d-flex flex-column align-items-center">
+    <form action="{{route('reservations.store')}}" method="POST" class="form-group d-flex flex-column align-items-center">
         @csrf
 
         <h1 class="text-center mb-4" style="color: var(--primary-color);">Faire une réservation 📝</h1>
