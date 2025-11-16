@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AnnonceController;
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\EquipementController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Annonce;
@@ -14,16 +15,20 @@ use App\Http\Controllers\CategorieController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\SalleController;
 use App\Http\Controllers\UserController;
-use App\Models\Role;
+
+
+Route::post('/login', [LoginController::class, 'login'])->name('login');
 
 require __DIR__.'/auth.php';
 
+
 Route::get('/', function () {
     $annonces = Annonce::with('categorie', 'auteur')->latest()->take(8)->get();
-    return view('welcome', compact('annonces'));
-});
-// Dashboard admin
+    $salles = Salle::orderBy('nom')->get();
+    return view('welcome', compact('annonces', 'salles'));
+})->name('welcome');
 
+// Dashboard admin
 Route::get('/dashboard', function () {
     $stats = [
         'annonces' => Annonce::count(),
@@ -38,7 +43,6 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'role:admin'])->name('dashboard');
 
 // Dashboard enseignant
-
 Route::get('/dash_enseignant', function () {
     $user = auth()->user();
     $stats = [
@@ -56,11 +60,15 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-// Routes pour la gestion des utilisateurs (admin uniquement)
+
+// Routes de gestion réservées à l'administrateur
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::resource('users', UserController::class)->except(['show']);
+    Route::resource('categories', CategorieController::class)->except(['show']);
+    Route::resource('salles', SalleController::class)->except(['show']);
+    Route::resource('equipements', EquipementController::class)->except(['show']);
 });
-// Route pour afficher les annonces d'un enseignant précis
+
 Route:: get('/enseignants/{id}/annonces', function ($id) {
     $enseignant = User::findOrFail($id);
     $annonces = Annonce::where('auteur_id', $id)->with('categorie', 'salle')->orderBy('date_publication', 'desc')->get();
@@ -68,40 +76,30 @@ Route:: get('/enseignants/{id}/annonces', function ($id) {
 })->middleware('auth')->name('enseignants.annonces');
 
 
-// Routes pour les Annonces
-Route::prefix('annonces')->name('annonces.')->controller(AnnonceController::class)->group(function () {
-    
-    // Accessible uniquement aux enseignants et admins
-    Route::middleware(['auth' , 'role:admin'])->group(function (){
-        Route::get('edit/{annonce}' , 'edit')->name('edit') ;
-        Route::put('update/{annonce}' , 'update')->name('update') ;
-        Route::delete('destroy/{annonce}' , 'destroy')->name('destroy') ;
-    }) ;
-    Route::middleware(['auth', 'role:admin,enseignant'])->group(function() {
-        Route::get('/create', 'create')->name('create');
-        Route::post('/store', 'store')->name('store');
+// Routes pour les Annonces (plus propre avec Route::resource)
+Route::resource('annonces', AnnonceController::class)->middleware('auth');
+// On restreint les routes de création/modification aux admins et enseignants
+Route::resource('annonces', AnnonceController::class)
+    ->only(['create', 'store', 'edit', 'update', 'destroy'])
+    ->middleware(['auth', 'role:admin,enseignant']);
+
+// Route pour vérifier la disponibilité d'une salle (accessible aux utilisateurs connectés)
+Route::get('/salles/verifier-disponibilite' , [SalleController::class, 'verifierDisponibilite'])
+    ->middleware('auth')
+    ->name('salles.verifierDisponibilite');
+
+// Routes pour les Réservations reservées aux admins et enseignants
+Route::middleware('auth' , 'role:admin,enseignant')->prefix('reservations')->name('reservations.')->group(function () {
+    Route::get('/', [ReservationController::class, 'index'])->name('index');
+    Route::get('/create', [ReservationController::class, 'create'])->name('create');
+    Route::post('/', [ReservationController::class, 'store'])->name('store');
+    Route::get('/{reservation}', [ReservationController::class, 'show'])->name('show');
+    Route::delete('/{reservation}', [ReservationController::class, 'supprimer'])->name('destroy');
+
+
+    // Actions réservées à l'admin
+    Route::middleware('role:admin')->group(function() {
+        Route::patch('/valider/{reservation}', [ReservationController::class, 'valider'])->name('valider');
+        Route::patch('/rejeter/{reservation}', [ReservationController::class, 'rejeter'])->name('rejeter');
     });
-    Route::get('/{annonce}', 'show')->name('show')->middleware('auth');
-    // Accessible à tous les utilisateurs connectés
-    Route::get('/', 'index')->name('index')->middleware('auth');
 });
-
-// Routes pour la gestion des catégories, salles et équipements (admin uniquement)
-Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::resource('categories', CategorieController::class)->except(['show']);
-    Route::resource('salles', SalleController::class)->except(['show']);
-    Route::resource('equipements', EquipementController::class)->except(['show']);
-});
-
-
-
-//Les réservations
-Route::prefix('reservations')->controller(ReservationController::class)->group(function (){
-    Route::get('/' , 'index')->name('index') ;
-    Route::get('/create' , 'create')->name('reservations.create') ;
-    Route::post('/store' , 'store')->name('store_reservation') ; // Renommé pour correspondre au formulaire
-    Route::patch('/valider/{reservation}' , 'valider')->name('valider_reservation') ;
-    Route::patch('/rejeter/{reservation}' , 'rejeter')->name('rejeter_reservation') ;
-    Route::delete('/supprimer/{reservation}' , 'supprimer')->name('supprimer_reservation') ;
-    Route::get('/{reservation}' , 'show')->name('reservations.show') ;
-}) ;

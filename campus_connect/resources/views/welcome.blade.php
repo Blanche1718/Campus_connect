@@ -216,12 +216,14 @@
             <p>Restez connecté à la vie du campus. Consultez les dernières annonces, pour ne manquer aucun événement important.</p>
         </div>
     </header>
-
+    
     <!-- Section Annonces -->
     <main class="container my-5 py-4">
+        
         <div class="text-center">
             <h2 class="section-title"> Dernières Annonces</h2>
         </div>
+        
         <div class="row g-4">
             @forelse ($annonces as $annonce)
             <div class="col-lg-3 col-md-6">
@@ -254,39 +256,42 @@
     </main>
 
 
-    <!-- Section Accès Rapide
-    <section class="py-5" style="background-color: #ffffff;">
+    <!-- Section Disponibilité des Salles -->
+    <section id="salles" class="py-5" style="background-color: #ffffff;">
         <div class="container text-center">
-            <h2 class="section-title">⚡ Accès Rapide</h2>
-            <div class="row justify-content-center g-4">
-                <div class="col-md-3">
-                    <a href="#" class="text-decoration-none">
-                        <div class="quick-access-item">
-                            <i class="bi bi-calendar-event"></i>
-                            <h6 class="mb-0">Calendrier Académique</h6>
-                        </div>
-                    </a>
+            <h2 class="section-title">Disponibilité des Salles</h2>
+            @auth
+                <p class="mb-4">Vérifiez si une salle est actuellement disponible.</p>
+                {{-- Le formulaire sera ajouté ici dans les prochaines étapes --}}
+                <div class="row justify-content-center">
+                    <div class="col-md-8 col-lg-7">
+                        <form action="{{ route('salles.verifierDisponibilite') }}" method="GET" class="d-flex gap-2">
+                            {{-- Champ de saisie avec liste de suggestions --}}
+                            <input class="form-control" list="sallesOptions" id="salle-search-input" name="salle_search" placeholder="Tapez ou sélectionnez une salle...">
+                            <datalist id="sallesOptions">
+                                @foreach ($salles as $salle)
+                                    <option value="{{ $salle->nom }}">
+                                @endforeach
+                            </datalist>
+
+                            <button type="submit" class="btn btn-primary">Vérifier</button>
+                        </form>
+
+                        {{-- Zone pour afficher le résultat --}}
+                        @if (isset($disponibiliteMessage) && $disponibiliteMessage)
+                            <div class="alert {{ isset($salleResultat) && str_contains($disponibiliteMessage, 'libre') ? 'alert-success' : 'alert-warning' }} mt-4">
+                                {{ $disponibiliteMessage }}
+                            </div>
+                        @endif
+                    </div>
                 </div>
-                <div class="col-md-3">
-                    <a href="#" class="text-decoration-none">
-                        <div class="quick-access-item">
-                            <i class="bi bi-laptop"></i>
-                            <h6 class="mb-0">Plateforme de Cours</h6>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-md-3">
-                    <a href="#" class="text-decoration-none">
-                        <div class="quick-access-item">
-                            <i class="bi bi-headset"></i>
-                            <h6 class="mb-0">Support Technique</h6>
-                        </div>
-                    </a>
-                </div>
-            </div>
+            @else
+                <p>
+                    <a href="{{ route('login') }}">Connectez-vous</a> pour vérifier la disponibilité d'une salle.
+                </p>
+            @endauth
         </div>
     </section>
-     -->
 
     <!-- Footer -->
     <footer class="py-4">

@@ -107,7 +107,7 @@
 
                 <!-- Reservations -->
                 <div>
-                    <a href="{{ route('index') }}" class="block no-underline">
+                    <a href="{{ route('reservations.index') }}" class="block no-underline">
                         <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6 hover:shadow-md transition">
                             <div class="flex justify-between items-start">
                                 <div>

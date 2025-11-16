@@ -44,6 +44,7 @@ class Annonce extends Model
     {
         return $this->belongsTo(Salle::class, 'salle_id');
     }
+    
 
     /**
      * Récupère les modèles Equipement basés sur les IDs stockés dans la colonne JSON.

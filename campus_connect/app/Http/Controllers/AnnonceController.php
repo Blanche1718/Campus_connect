@@ -19,20 +19,49 @@ class AnnonceController extends Controller
      /**
      * Methode pour afficher toutes les annonces
      */
-    public function index (){
+    public function index ( Request $request )  {
         // On récupère toutes les catégories pour le filtre
         $categories = Category::orderBy('nom')->get();
-
+        $auteurs = User::orderBy('name')->get();
         // On construit la requête pour les annonces
         $annoncesQuery = Annonce::with(['auteur', 'categorie', 'salle']) // Eager loading
                                 ->orderBy('date_publication', 'desc');
 
         // On applique le filtre si une catégorie est demandée
-        if (request('categorie_id')) {
-            $annoncesQuery->where('categorie_id', request('categorie_id'));
+     
+        // -------- FILTRE CATÉGORIE --------
+        if ($request->filled('categorie_id')) {
+            $annoncesQuery->where('categorie_id', $request->categorie_id);
         }
 
-        return view('annonces.index', ['annonces' => $annoncesQuery->get(), 'categories' => $categories]);
+        // -------- FILTRE AUTEUR --------
+        if ($request->filled('auteur_id')) {
+            $annoncesQuery->where('auteur_id', $request->auteur_id);
+        }
+
+        // -------- FILTRE DATE --------
+        if ($request->filled('date_publication')) {
+            $annoncesQuery->whereDate('date_publication', $request->date_publication);
+        }
+
+        // -------- TRI --------
+        if ($request->filled('tri')) {
+            if ($request->tri === 'recent') {
+                $annoncesQuery->orderBy('date_publication', 'desc');
+            } elseif ($request->tri === 'ancien') {
+                $annoncesQuery->orderBy('date_publication', 'asc');
+            }
+        } else {
+            // Tri par défaut
+            $annoncesQuery->orderBy('date_publication', 'desc');
+        }
+
+        // 🔹 Récupération finale (pas de pagination)
+        $annonces = $annoncesQuery->get();
+
+        return view('annonces.index', compact('annonces', 'categories', 'auteurs'));
+
+        // return view('annonces.index', ['annonces' => $annoncesQuery->get(), 'categories' => $categories]);
     }
     /** 
      * Methode pour la création des annonces  
