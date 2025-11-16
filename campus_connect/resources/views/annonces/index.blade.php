@@ -248,7 +248,7 @@
                             <h4 class="mt-3 fw-light" style="color: var(--text-color);">C'est bien calme par ici...</h4>
                             <p style="color: var(--text-muted);">
                                 @if(request('categorie_id'))
-                                    Il n'y a pas d'annonce dans cette catégorie pour le moment.
+                                    Il n'y a pas d'annonce qui répond à votre recherche pour le moment.
                                 @else
                                     Aucune annonce n'a encore été publiée.
                                 @endif

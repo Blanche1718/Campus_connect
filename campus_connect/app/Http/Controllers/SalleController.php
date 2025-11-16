@@ -104,7 +104,8 @@ class SalleController extends Controller
 
         // On doit recharger les données nécessaires pour la page d'accueil
         $annonces = Annonce::with('categorie', 'auteur')->latest()->take(4)->get();
+        $salles = Salle::orderBy('nom')->get(); // <-- On ajoute cette ligne pour récupérer les salles
 
-        return view('welcome', compact('annonces', 'salleResultat', 'disponibiliteMessage'));
+        return view('welcome', compact('annonces', 'salles', 'salleResultat', 'disponibiliteMessage'));
     }
 }

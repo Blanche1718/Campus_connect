@@ -64,8 +64,9 @@ return [
     | is set to "UTC" by default as it is suitable for most use cases.
     |
     */
-
-    'timezone' => 'UTC',
+//  je veux que mon application soit en UTC+1
+    'timezone' => env('APP_TIMEZONE', 'Europe/Paris'),
+    
 
     /*
     |--------------------------------------------------------------------------

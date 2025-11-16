@@ -266,15 +266,14 @@
                 <div class="row justify-content-center">
                     <div class="col-md-8 col-lg-7">
                         <form action="{{ route('salles.verifierDisponibilite') }}" method="GET" class="d-flex gap-2">
-                            <input type="text" class="form-control" name="salle_search" placeholder="Tapez le nom d'une salle...">
-                            {{-- 
-                            <select name="salle_id" class="form-select">
-                                <option selected disabled>Ou choisissez une salle</option>
+                            {{-- Champ de saisie avec liste de suggestions --}}
+                            <input class="form-control" list="sallesOptions" id="salle-search-input" name="salle_search" placeholder="Tapez ou sélectionnez une salle...">
+                            <datalist id="sallesOptions">
                                 @foreach ($salles as $salle)
-                                    <option value="{{ $salle->id }}">{{ $salle->nom }}</option>
+                                    <option value="{{ $salle->nom }}">
                                 @endforeach
-                            </select>
-                            --}}
+                            </datalist>
+
                             <button type="submit" class="btn btn-primary">Vérifier</button>
                         </form>
 
