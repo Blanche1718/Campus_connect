@@ -40,8 +40,12 @@ Route::get('/dashboard', function () {
         'equipements' => Equipement::count(),
         'reservations' => Reservation::count()
     ];
-    $recentAnnonces = Annonce::with(['auteur','categorie'])->latest('date_publication')->take(8)->get();
-    return view('dashboard', compact('stats','recentAnnonces'));
+    // $recentAnnonces = Annonce::with(['auteur','categorie'])->latest('date_publication')->take(8)->get();
+    $pendingReservations = Reservation::with(['user', 'salle', 'equipement'])
+        ->where('statut', 'en_attente')
+        ->latest('created_at')
+        ->get();
+    return view('dashboard', compact('stats','pendingReservations'));
 })->middleware(['auth', 'role:admin'])->name('dashboard');
 
 // Dashboard enseignant
