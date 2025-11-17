@@ -46,8 +46,9 @@ class UserController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => ['nullable', 'confirmed', Rules\Password::defaults()], // Le mot de passe est optionnel
+            'password' => ['required', 'confirmed', Rules\Password::defaults()], // Le mot de passe est optionnel
             'role_id' => 'required|exists:roles,id',
+
         ]);
  
         // On vérifie si le rôle est 'enseignant' (ID = 2)
@@ -107,7 +108,7 @@ class UserController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-            'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'role_id' => 'required|exists:roles,id',
         ]);
 
