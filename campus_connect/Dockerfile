@@ -21,6 +21,7 @@ RUN docker-php-ext-install \
     gd \
     mbstring \
     pdo_mysql \
+    pdo_pgsql \
     xml \
     zip
 
