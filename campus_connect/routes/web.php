@@ -69,6 +69,8 @@ Route::middleware('auth')->group(function () {
 
 // Routes de gestion réservées à l'administrateur
 Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('users/download-template', [UserController::class, 'downloadTemplate'])->name('users.download-template');
+    Route::post('users/import', [UserController::class, 'import'])->name('users.import');
     Route::resource('users', UserController::class)->except(['show']);
     Route::resource('categories', CategorieController::class)->except(['show']);
     Route::resource('salles', SalleController::class)->except(['show']);

@@ -8,6 +8,19 @@
     <div class="py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
+            <!-- Bloc pour afficher les erreurs d'importation -->
+            @if(session('import_errors'))
+                <div class="mb-6 p-4 bg-red-100 dark:bg-red-900/40 border border-red-300 dark:border-red-700 rounded-lg shadow">
+                    <h4 class="font-bold text-red-800 dark:text-red-200">Erreurs lors de l'importation</h4>
+                    <ul class="mt-2 list-disc list-inside text-sm text-red-700 dark:text-red-300">
+                        @foreach(session('import_errors') as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+            <!-- Fin du bloc d'erreurs -->
+
             <!-- 📊 STATISTIQUES AMÉLIORÉES -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
 
@@ -54,11 +67,29 @@
                             </p>
 
                             <div class="mt-5">
-                                <a href="{{ route($item['create']) }}"
-                                   class="inline-block bg-black/10 dark:bg-white/10 hover:bg-black/20 dark:hover:bg-white/20
-                                          transition text-xs px-3 py-1 rounded-lg font-medium backdrop-blur-md">
-                                    + Créer
-                                </a>
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <a href="{{ route($item['create']) }}"
+                                       class="inline-block bg-black/10 dark:bg-white/10 hover:bg-black/20 dark:hover:bg-white/20
+                                              transition text-xs px-3 py-1 rounded-lg font-medium backdrop-blur-md">
+                                        + Créer
+                                    </a>
+                                    @if($item['label'] === 'Utilisateurs')
+                                        <div class="flex items-center gap-2 mt-2 sm:mt-0">
+                                            <a href="{{ route('users.download-template') }}" class="inline-flex items-center gap-1 bg-black/10 dark:bg-white/10 hover:bg-black/20 dark:hover:bg-white/20 transition text-xs px-3 py-1 rounded-lg font-medium backdrop-blur-md" title="Télécharger le modèle">
+                                                <x-heroicon-o-arrow-down-tray class="w-3 h-3" />
+                                                <span>Modèle</span>
+                                            </a>
+                                            <form action="{{ route('users.import') }}" method="POST" enctype="multipart/form-data" class="inline-flex">
+                                                @csrf
+                                                <label for="file-upload" class="cursor-pointer inline-flex items-center gap-1 bg-blue-100 dark:bg-blue-900/40 hover:bg-blue-200 dark:hover:bg-blue-800/50 transition text-xs px-3 py-1 rounded-lg font-medium backdrop-blur-md text-blue-700 dark:text-blue-300">
+                                                    <x-heroicon-o-arrow-up-tray class="w-3 h-3" />
+                                                    <input id="file-upload" name="file" type="file" class="sr-only" onchange="this.form.submit()">
+                                                    <span>Importer</span>
+                                                </label>
+                                            </form>
+                                        </div>
+                                    @endif
+                                </div>
                             </div>
                         </div>
                     </a>
