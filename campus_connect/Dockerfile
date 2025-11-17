@@ -10,6 +10,7 @@ RUN apk add --no-cache \
     libzip-dev \
     oniguruma-dev \
     libxml2-dev \
+    postgresql-dev \
     zip \
     unzip \
     nginx \
