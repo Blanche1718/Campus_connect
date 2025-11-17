@@ -52,7 +52,8 @@ COPY .docker/supervisord.conf /etc/supervisord.conf
 RUN composer dump-autoload --optimize
 
 # Mettre en cache la configuration et les routes pour la production
-RUN php artisan optimize:clear
+RUN php artisan config:cache
+RUN php artisan route:cache
 
 
 # Définir les permissions correctes pour Laravel
