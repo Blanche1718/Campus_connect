@@ -5,4 +5,8 @@ services:
     plan: free
     dockerfilePath: ./campus_connect/Dockerfile
     dockerContext: ./campus_connect
-    preDeployCommand: "php artisan migrate --force"
+    buildHook: |
+      set -o errexit
+      echo "--- Running build hook ---"
+      php artisan migrate --force
+      echo "--- Build hook finished ---"
