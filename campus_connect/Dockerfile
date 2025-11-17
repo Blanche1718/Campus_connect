@@ -33,7 +33,7 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 FROM base AS dependencies
 
 COPY composer.json composer.lock ./
-RUN composer install --no-interaction --no-plugins --no-scripts --prefer-dist
+RUN composer install --no-interaction --no-dev --prefer-dist --optimize-autoloader
 
 # ---- Application ----
 FROM base AS app
