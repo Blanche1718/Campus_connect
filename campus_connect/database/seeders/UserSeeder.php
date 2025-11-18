@@ -42,6 +42,15 @@ class UserSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
+            [
+                'name' => 'Marie Curie',
+                'email' => 'curie@campusconnect.com',
+                'email_verified_at' => now(),
+                'password' => Hash::make('etudiant456'),
+                'role_id' => 3, // étudiant
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
         ]);
     }
 }

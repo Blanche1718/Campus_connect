@@ -13,7 +13,7 @@ class SalleFactory extends Factory
     public function definition()
     {
         return [
-            'nom' => $this->faker->unique()->company(),
+            'nom' => $this->faker->unique()->words(2, true), // Génère un nom unique de 2 mots
             'capacite' => $this->faker->optional()->numberBetween(10, 300),
             'localisation' => $this->faker->optional()->city,
             'description' => $this->faker->optional()->sentence(),

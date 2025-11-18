@@ -15,12 +15,12 @@ class EquipementSeeder extends Seeder
         $defaults = [
             ['nom' => 'Projecteur', 'categorie' => 'Vidéo', 'etat' => 'disponible', 'description' => 'Projecteur HD', 'disponibilite' => true],
             ['nom' => 'Microphone sans fil', 'categorie' => 'Audio', 'etat' => 'disponible', 'description' => 'Micro HF', 'disponibilite' => true],
+            ['nom' => 'Tableau blanc interactif', 'categorie' => 'Informatique', 'etat' => 'disponible', 'description' => 'TBI avec stylets', 'disponibilite' => true],
+            ['nom' => 'Visioconférence', 'categorie' => 'Vidéo', 'etat' => 'en maintenance', 'description' => 'Système de visioconférence complet', 'disponibilite' => false],
         ];
 
         foreach ($defaults as $d) {
             Equipement::updateOrCreate(['nom' => $d['nom']], $d);
         }
-
-        Equipement::factory()->count(8)->create();
     }
 }
