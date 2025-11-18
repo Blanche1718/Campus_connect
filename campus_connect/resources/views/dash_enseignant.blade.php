@@ -115,6 +115,59 @@
                 </div>
 
             </div>
+            <div class="container py-4">
+
+    <h2 class="mb-4">Mes annonces favorites</h2>
+
+    <div class="row">
+        @forelse ($favoriteAnnonces as $annonce)
+            <div class="col-md-4 mb-3">
+                <div class="card shadow-sm">
+
+                    <div class="card-body">
+                        <a href="{{route('annonces.show' , $annonce->id)}}" class="text-info text-decoration-none">
+                            
+                        <h5 class="card-title"><i class="bi bi-star-fill text-warning"></i>  {{ $annonce->titre }}</h5> <br>
+                    </a>
+                    <p class="m-1 card-text">{{ Str::limit($annonce->contenu, 80) }}</p>
+
+                        <!-- Bouton favoris -->
+                        <button class="btn-favoris text-danger {{ $annonce->isFavoritedBy(auth()->id()) ? '' : '' }}"
+                                data-id="{{ $annonce->id }}">
+                                Retirer des favoris
+                            
+                        </button>
+                    </div>
+                </div>
+            </div>
+        @empty
+            <p class="text-muted">Aucune annonce favorite pour le moment.</p>
+        @endforelse
+    </div>
+</div>
         </div>
     </div>
+
+    <script>
+document.addEventListener("DOMContentLoaded", () => {
+    const buttons = document.querySelectorAll('.btn-favoris');
+
+    buttons.forEach(btn => {
+        btn.addEventListener("click", async () => {
+
+            const annonceId = btn.dataset.id;
+
+            const response = await fetch(`/annonces/${annonceId}/favorite`, {
+                method: "POST",
+                headers: {
+                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
+                }
+            });
+
+            // Peu importe le résultat, recharge la page
+            location.reload();
+        });
+    });
+});
+</script>
 </x-app-layout>

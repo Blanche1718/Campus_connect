@@ -58,4 +58,31 @@ class Annonce extends Model
         }
         return Equipement::whereIn('id', $this->equipements)->get();
     }
+
+    public function reactions()
+    {
+        return $this->hasMany(Reaction::class);
+    }
+
+    public function likes()
+    {
+        return $this->reactions()->where('type', 'like');
+    }
+
+    public function dislikes()
+    {
+        return $this->reactions()->where('type', 'dislike');
+    }
+
+
+    public function favorites()
+{
+    return $this->hasMany(Favori::class);
+}
+
+public function isFavoritedBy($userId)
+{
+    return $this->favorites()->where('user_id', $userId)->exists();
+}
+
 }

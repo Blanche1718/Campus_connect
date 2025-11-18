@@ -192,6 +192,8 @@
                                 <a href="{{ route('dashboard') }}" class="btn btn-primary me-2">Mon Espace</a>
                             @elseif(Auth::user()->role->nom === 'enseignant')
                                 <a href="{{ route('dashboard.enseignant') }}" class="btn btn-primary me-2">Mon Espace</a>
+                            @elseif(Auth::user()->role->nom === 'etudiant')
+                                <a href="{{ route('dashboard.etudiant') }}" class="btn btn-primary me-2">Mon Espace</a>
                             @endif
                             
                             <form method="POST" action="{{ route('logout') }}">

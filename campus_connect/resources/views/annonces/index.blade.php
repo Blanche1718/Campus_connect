@@ -173,15 +173,15 @@
                 </div>
 
                 {{-- ACTIONS --}}
-                <div class="md:col-span-4 flex gap-4">
+                <div class="md:col-span-4 d-flex gap-4">
                     <button type="submit"
-                        class="px-6 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition">
+                        class="px-6 py-2 btn btn-primary text-white font-medium rounded-lg hover:bg-indigo-700 transition">
                         Filtrer
                     </button>
 
                     @if(request()->anyFilled(['categorie_id','auteur_id','date_publication','tri']))
                         <a href="{{ route('annonces.index') }}"
-                           class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">
+                           class="px-6 py-2 btn bg-secondary text-white rounded-lg hover:bg-gray-300 transition">
                             Réinitialiser
                         </a>
                     @endif
@@ -189,6 +189,20 @@
 
             </form>
         </div>
+
+        @if (auth()->user()->role->nom == 'enseignant')
+            <div class="d-flex justify-content-end m-3">
+                <a href="{{route('dashboard.enseignant')}}" class="btn btn-primary"> Mes favoris</a>
+            </div>   
+        @endif
+
+        @if (auth()->user()->role->nom == 'etudiant')
+            <div class="d-flex justify-content-end m-3">
+                <a href="{{route('dashboard.etudiant')}}" class="btn btn-primary"> Mes favoris</a>
+            </div>  
+        @endif 
+
+      
             <!-- Liste des Annonces -->
             <div class="row gy-5">
                 @forelse ($annonces as $annonce)
@@ -255,9 +269,39 @@
                                         </div>
                                     @endif
                                 </div>
+                                
                             </footer>
-                        </article>
-                    </div>
+                            
+                            <div class="bg-white w-25 d-flex gap-2 m-3" >
+                               <button onclick="react({{ $annonce->id }}, 'like')" class="btn btn-light" title="J'aime">
+                                    <i class="h4 bi bi-hand-thumbs-up-fill text-primary"></i>
+                                    <span class="h5" id="like-count-{{ $annonce->id }}">{{ $annonce->likes()->count() }}</span>
+                                </button>
+
+                                <button onclick="react({{ $annonce->id }}, 'dislike')" class="btn btn-light" title="J'aime pas">
+                                    <i class="h4 bi bi-hand-thumbs-down-fill text-danger"></i>
+                                    <span class="h5" id="dislike-count-{{ $annonce->id }}">{{ $annonce->dislikes()->count() }}</span>
+                                </button>
+
+                            @php
+                                $isFavorited = $annonce->isFavoritedBy(auth()->id());
+                                $btnText = $isFavorited ? "Retirer des favoris" : "Ajouter aux favoris";
+                            @endphp
+
+                            <button onclick="toggleFavorite({{ $annonce->id }})" class="btn btn-light d-flex align-items-center gap-2">
+
+                                <i id="fav-icon-{{ $annonce->id }}"
+                                class="bi {{ $isFavorited ? 'bi-star-fill text-warning' : 'bi-star' }}">
+                                </i>
+
+                                <span id="fav-text-{{ $annonce->id }}">
+                                    {{ $btnText }}
+                                </span>
+
+                            </button>
+                        </div>
+                    </article>
+                </div>
                 @empty
                     <div class="col-12">
                         <div class="text-center py-5 bg-white rounded-3 shadow-sm">
@@ -275,6 +319,61 @@
                 @endforelse
             </div>
         </div>
+        
+<script>
+function react(annonceId, type) {
+    fetch(`/annonces/${annonceId}/react`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": "{{ csrf_token() }}"
+        },
+        body: JSON.stringify({ type })
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Mise à jour dynamique
+        document.getElementById(`like-count-${annonceId}`).textContent = data.likes;
+        document.getElementById(`dislike-count-${annonceId}`).textContent = data.dislikes;
+    })
+    .catch(err => console.error(err));
+}
+
+function toggleFavorite(annonceId) {
+    fetch(`/annonces/${annonceId}/favorite`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": "{{ csrf_token() }}"
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        let icon = document.getElementById(`fav-icon-${annonceId}`);
+        let btnText = document.getElementById(`fav-text-${annonceId}`);
+
+        if (data.favorited) {
+            // Icône
+            icon.classList.remove("bi-star");
+            icon.classList.add("bi-star-fill", "text-warning");
+
+            // Texte
+            btnText.innerText = "Retirer des favoris";
+
+        } else {
+            // Icône
+            icon.classList.remove("bi-star-fill", "text-warning");
+            icon.classList.add("bi-star");
+
+            // Texte
+            btnText.innerText = "Ajouter aux favoris";
+        }
+    });
+}
+</script>
     </body>
     </html>
 </x-app-layout>
+
+

@@ -8,10 +8,12 @@ use App\Jobs\PublishAnnonceJob;
 use App\Models\Annonce;
 use App\Models\Category;
 use App\Models\Equipement;
+use App\Models\Favori;
 use App\Models\Salle;
 use App\Models\User;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Auth\Events\Validated;
 use Illuminate\Http\Request;
 
 class AnnonceController extends Controller
@@ -187,4 +189,74 @@ class AnnonceController extends Controller
                 return redirect()->back()->withInput() ;//
             }
     }
+
+
+    //Méthode pour gérer les likes
+    public function react(Request $request, Annonce $annonce)
+    {
+
+        $request->validate([
+            'type' => 'required|in:like,dislike',
+        ]);
+
+        //On vérifie si pour une annonce , l'utilisateur connecté a deja réagi
+        $existing = $annonce->reactions()
+            ->where('user_id', auth()->id())
+            ->first();
+
+            
+        if ($existing) {
+            /* S'il a deja réagi et que le type de reaction 
+            correspond au même type de réaction cliquée 
+             à nouveau , alors on supprime la réaction
+            */
+            if ($existing->type === $request->type) {
+                $existing->delete();
+            } else {
+                /* Sinon S'il a deja réagi et que la réaction 
+            est différente à  la réaction cliquée 
+             à nouveau , alors on met à jour la table réaction
+            */
+                $existing->update(['type' => $request->type]);
+            }
+        } else {
+
+            /*
+                S'il n'a pas encore réagit , on crée la reaction
+            */
+            $annonce->reactions()->create([
+                'user_id' => auth()->id(),
+                'type' => $request->type,
+            ]);
+        }
+
+        // Retourne nonmbre de like ou de dislike pour chaque annonce
+        return response()->json([
+            'likes' => $annonce->likes()->count(),
+            'dislikes' => $annonce->dislikes()->count(),
+        ]);
+    }
+
+        public function toggleFavorite(Annonce $annonce)
+        {
+            $favorite = $annonce->favorites()
+                ->where('user_id', auth()->id())
+                ->first();
+
+            if ($favorite) {
+                // retirer des favoris
+                $favorite->delete();
+                $favorited = false;
+            } else {
+                // ajouter aux favoris
+                $annonce->favorites()->create([
+                    'user_id' => auth()->id(),
+                ]);
+                $favorited = true;
+            }
+
+            return response()->json([
+                'favorited' => $favorited
+            ]);
+        }
 }

@@ -22,6 +22,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role_id',
+        'must_change_password'
     ];
 
     /**
@@ -55,4 +56,14 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class) ;  
     }
     
+    public function favorites()
+    {
+        return $this->hasMany(Favori::class);
+    }
+
+    public function favoriteAnnonces()
+    {
+        return $this->belongsToMany(Annonce::class, 'favoris');
+    }
 }
+
