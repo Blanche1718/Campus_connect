@@ -39,8 +39,12 @@ Route::get('/dashboard', function () {
         'equipements' => Equipement::count(),
         'reservations' => Reservation::count()
     ];
-    $recentAnnonces = Annonce::with(['auteur','categorie'])->latest('date_publication')->take(8)->get();
-    return view('dashboard', compact('stats','recentAnnonces'));
+    // $recentAnnonces = Annonce::with(['auteur','categorie'])->latest('date_publication')->take(8)->get();
+    $pendingReservations = Reservation::with(['user', 'salle', 'equipement'])
+        ->where('statut', 'en_attente')
+        ->latest('created_at')
+        ->get();
+    return view('dashboard', compact('stats','pendingReservations'));
 })->middleware(['auth', 'role:admin'])->name('dashboard');
 
 // Dashboard enseignant
@@ -74,6 +78,8 @@ Route::middleware('auth')->group(function () {
 
 // Routes de gestion réservées à l'administrateur
 Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('users/download-template', [UserController::class, 'downloadTemplate'])->name('users.download-template');
+    Route::post('users/import', [UserController::class, 'import'])->name('users.import');
     Route::resource('users', UserController::class)->except(['show']);
     Route::resource('categories', CategorieController::class)->except(['show']);
     Route::resource('salles', SalleController::class)->except(['show']);
