@@ -35,12 +35,28 @@ FROM base AS dependencies
 COPY composer.json composer.lock ./
 RUN composer install --no-interaction --no-dev --prefer-dist --no-scripts
 
+# ---- Frontend Assets ----
+FROM node:20-alpine AS assets
+
+# Définir le répertoire de travail
+WORKDIR /app
+
+# Copier les fichiers de dépendances et installer
+COPY package.json package-lock.json vite.config.js ./
+RUN npm install
+
+# Copier le reste des fichiers nécessaires pour le build
+COPY resources/ resources/
+COPY tailwind.config.js postcss.config.js ./
+
+# Compiler les assets pour la production
+RUN npm run build
+
 # ---- Application ----
 FROM base AS app
 
 # Copier les dépendances installées
 COPY --from=dependencies /var/www/html/vendor ./vendor
-
 # Copier le code de l'application
 COPY . .
 
@@ -51,12 +67,15 @@ COPY .docker/start-container.sh /usr/local/bin/start-container.sh
 
 RUN chmod +x /usr/local/bin/start-container.sh
 
+# Copier les assets compilés
+COPY --from=assets /app/public/build ./public/build
+
 # Générer le fichier autoload optimisé
 RUN composer dump-autoload --optimize
 
 # Mettre en cache la configuration et les routes pour la production
-# RUN php artisan config:cache
-# RUN php artisan route:cache
+RUN php artisan config:cache
+RUN php artisan route:cache
 
 
 # Définir les permissions correctes pour Laravel
