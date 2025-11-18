@@ -2,8 +2,7 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Support\Facades\DB;
+use App\Models\Category;
 use Illuminate\Database\Seeder;
 
 class CategorieSeeder extends Seeder
@@ -13,11 +12,22 @@ class CategorieSeeder extends Seeder
      */
     public function run(): void
     {
-         DB::table('categories')->insert([
+        $categories = [
             ['nom' => 'Examen'],
             ['nom' => 'Soutenance'],
             ['nom' => 'Activité'],
             ['nom' => 'Appel à candidatures'],
-        ]);
+            ['nom' => 'Atelier'],
+            ['nom' => 'Conférence'],
+            ['nom' => 'Colloque'],
+            ['nom' => 'Séminaire'],
+            ['nom' => 'Webinaire'],
+            ['nom' => 'Formation'],
+        ];
+
+        foreach ($categories as $category) {
+            Category::updateOrCreate(['nom' => $category['nom']], $category);
+        }
     }
+
 }

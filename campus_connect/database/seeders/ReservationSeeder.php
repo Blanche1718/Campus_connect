@@ -31,6 +31,16 @@ class ReservationSeeder extends Seeder
                 'motif' => 'Réunion de groupe projet web',
                 'statut' => 'en_attente',
             ],
+            [
+                'user_id' => 4, // Marie Curie
+                'salle_id' => 3, // Salle 102
+                'equipement_id' => 3, // Tableau blanc interactif
+                'date_debut' => now()->addDays(10)->setHour(9),
+                'date_fin' => now()->addDays(10)->setHour(11),
+                'motif' => 'Atelier de physique expérimentale',
+                'statut' => 'valide',
+            ],
+            
         ];
 
         foreach ($reservations as $res) {
