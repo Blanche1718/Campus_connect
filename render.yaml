@@ -5,8 +5,10 @@ services:
     plan: free
     dockerfilePath: ./campus_connect/Dockerfile
     dockerContext: ./campus_connect
-    buildHook: |
+    preDeployCommand: |
       set -o errexit
-      echo "--- Running build hook ---"
+      echo "--- Running pre-deploy commands ---"
+      php artisan config:cache
+      php artisan route:cache
       php artisan migrate --force
-      echo "--- Build hook finished ---"
+      echo "--- Pre-deploy commands finished ---"
