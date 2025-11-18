@@ -47,6 +47,9 @@ COPY . .
 # Copier la configuration Nginx et Supervisor
 COPY .docker/nginx.conf /etc/nginx/nginx.conf
 COPY .docker/supervisord.conf /etc/supervisord.conf
+COPY .docker/start-container.sh /usr/local/bin/start-container.sh
+
+RUN chmod +x /usr/local/bin/start-container.sh
 
 # Générer le fichier autoload optimisé
 RUN composer dump-autoload --optimize
@@ -64,4 +67,4 @@ RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 EXPOSE 80
 
 # Lancer Supervisor (qui gère Nginx et PHP-FPM)
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
+CMD ["start-container.sh"]
