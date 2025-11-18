@@ -11,6 +11,10 @@ set -e
 echo "--- Running database migrations ---"
 php artisan migrate --force
 
+# Remplir la base de données avec les données initiales (rôles, etc.)
+echo "--- Seeding database ---"
+php artisan db:seed --force
+
 # Générer les caches de production avec les bonnes variables d'environnement
 echo "--- Caching configuration and routes ---"
 php artisan config:cache
