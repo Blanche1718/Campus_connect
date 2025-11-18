@@ -38,6 +38,9 @@ RUN composer install --no-interaction --no-dev --prefer-dist --no-scripts
 # ---- Frontend Assets ----
 FROM node:20-alpine AS assets
 
+# Accepter un argument pour l'URL de production
+ARG APP_URL
+
 # Définir le répertoire de travail
 WORKDIR /app
 
@@ -50,7 +53,7 @@ COPY resources/ resources/
 COPY tailwind.config.js postcss.config.js ./
 
 # Compiler les assets pour la production
-RUN npm run build
+RUN VITE_APP_URL=${APP_URL} npm run build
 
 # ---- Application ----
 FROM base AS app
