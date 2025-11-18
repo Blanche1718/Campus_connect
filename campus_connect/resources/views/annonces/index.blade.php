@@ -173,15 +173,15 @@
                 </div>
 
                 {{-- ACTIONS --}}
-                <div class="md:col-span-4 d-flex gap-4">
+                <div class="md:col-span-4 flex gap-4">
                     <button type="submit"
-                        class="px-6 py-2 btn btn-primary text-white font-medium rounded-lg hover:bg-indigo-700 transition">
+                        class="px-6 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition">
                         Filtrer
                     </button>
 
                     @if(request()->anyFilled(['categorie_id','auteur_id','date_publication','tri']))
                         <a href="{{ route('annonces.index') }}"
-                           class="px-6 py-2 btn bg-secondary text-white rounded-lg hover:bg-gray-300 transition">
+                           class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">
                             Réinitialiser
                         </a>
                     @endif
