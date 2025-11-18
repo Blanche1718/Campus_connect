@@ -73,10 +73,6 @@ COPY --from=assets /app/public/build ./public/build
 # Générer le fichier autoload optimisé
 RUN composer dump-autoload --optimize
 
-# Mettre en cache la configuration et les routes pour la production
-RUN php artisan config:cache
-RUN php artisan route:cache
-
 
 # Définir les permissions correctes pour Laravel
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache

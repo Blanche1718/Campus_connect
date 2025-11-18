@@ -11,9 +11,10 @@ set -e
 echo "--- Running database migrations ---"
 php artisan migrate --force
 
-# Les caches sont déjà générés dans le Dockerfile.
-# php artisan config:cache
-# php artisan route:cache
+# Générer les caches de production avec les bonnes variables d'environnement
+echo "--- Caching configuration and routes ---"
+php artisan config:cache
+php artisan route:cache
 
 # Lancer Supervisor (qui gère Nginx et PHP-FPM)
 echo "--- Starting application ---"
