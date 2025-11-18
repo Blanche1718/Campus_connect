@@ -53,6 +53,11 @@ class Annonce extends Model
      */
     public function getEquipementsDetailsAttribute()
     {
-        return Equipement::whereIn('id', $this->equipements ?? [])->get();
+        // Assurez-vous que $this->equipements est un tableau, même si le casting devrait le faire.
+        $equipementIds = $this->equipements;
+        if (is_string($equipementIds)) {
+            $equipementIds = json_decode($equipementIds, true);
+        }
+        return Equipement::whereIn('id', $equipementIds ?? [])->get();
     }
 }
