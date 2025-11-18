@@ -15,6 +15,10 @@ php artisan migrate --force
 echo "--- Seeding database ---"
 php artisan db:seed --force
 
+# Créer le lien symbolique pour le stockage public
+echo "--- Linking storage ---"
+php artisan storage:link || echo "Storage link already exists."
+
 # Générer les caches de production avec les bonnes variables d'environnement
 echo "--- Caching configuration and routes ---"
 php artisan config:cache
