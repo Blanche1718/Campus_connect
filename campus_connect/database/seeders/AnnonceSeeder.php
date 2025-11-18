@@ -22,7 +22,7 @@ class AnnonceSeeder extends Seeder
             'date_publication' => now(),
             'date_evenement' => now()->addWeeks(3),
             'salle_id' => 1, // Amphi A
-            'statut' => 'publie',
+            'statut' => 'publiee',
             'equipements' => json_encode([1, 2]), // Projecteur, Micro
         ]);
 
@@ -33,7 +33,7 @@ class AnnonceSeeder extends Seeder
             'date_publication' => now(),
             'date_evenement' => now()->addMonth(),
             'salle_id' => 2, // Salle 101
-            'statut' => 'publie',
+            'statut' => 'publiee',
             'equipements' => json_encode([]),
         ]);
         Annonce::updateOrCreate(['titre' => 'Conférence sur la cybersécurité'], [
@@ -43,7 +43,7 @@ class AnnonceSeeder extends Seeder
             'date_publication' => now(),
             'date_evenement' => now()->addWeeks(2),
             'salle_id' => 1, // Amphi A
-            'statut' => 'publie',
+            'statut' => 'publiee',
             'equipements' => json_encode([1, 4]), // Projecteur, Visioconférence
         ]);
         Annonce::updateOrCreate(['titre' => 'Atelier de développement web'], [
@@ -53,7 +53,7 @@ class AnnonceSeeder extends Seeder
             'date_publication' => now(),
             'date_evenement' => now()->addWeeks(4),
             'salle_id' => 2, // Salle 101
-            'statut' => 'publie',
+            'statut' => 'publiee',
             'equipements' => json_encode([1, 3]), // Projecteur, Tableau blanc interactif
         ]);
         Annonce::updateOrCreate(['titre' => 'Séminaire sur l\'énergie renouvelable'], [
@@ -63,7 +63,7 @@ class AnnonceSeeder extends Seeder
             'date_publication' => now(),
             'date_evenement' => now()->addWeeks(6),
             'salle_id' => 1, // Amphi A
-            'statut' => 'publie',
+            'statut' => 'publiee',
             'equipements' => json_encode([1, 2, 4]), // Projecteur, Micro, Visioconférence
         ]);
         Annonce::updateOrCreate(['titre' => 'Lancement du club de robotique'], [
@@ -73,7 +73,7 @@ class AnnonceSeeder extends Seeder
             'date_publication' => now(),
             'date_evenement' => now()->addWeeks(2),
             'salle_id' => 2, // Salle 101
-            'statut' => 'publie',
+            'statut' => 'publiee',
             'equipements' => json_encode([3]), // Tableau blanc interactif
         ]);
         Annonce::updateOrCreate(['titre' => 'Atelier de sécurité informatique'], [
@@ -83,7 +83,7 @@ class AnnonceSeeder extends Seeder
             'date_publication' => now(),
             'date_evenement' => now()->addWeeks(5),
             'salle_id' => 1, // Amphi A
-            'statut' => 'publie',
+            'statut' => 'publiee',
             'equipements' => json_encode([1, 4]), // Projecteur, Visioconférence
         ]);
         Annonce::updateOrCreate(['titre' => 'Conférence sur l\'intelligence artificielle'], [
@@ -93,7 +93,7 @@ class AnnonceSeeder extends Seeder
             'date_publication' => now(),
             'date_evenement' => now()->addWeeks(3),
             'salle_id' => 1, // Amphi A
-            'statut' => 'publie',
+            'statut' => 'publiee',
             'equipements' => json_encode([1, 2]), // Projecteur, Micro
         ]);
         Annonce::updateOrCreate(['titre' => 'Atelier de développement mobile'], [
@@ -103,7 +103,7 @@ class AnnonceSeeder extends Seeder
             'date_publication' => now(),
             'date_evenement' => now()->addWeeks(4),
             'salle_id' => 2, // Salle 101
-            'statut' => 'publie',
+            'statut' => 'publiee',
             'equipements' => json_encode([1, 3]), // Projecteur, Tableau blanc interactif
         ]);
        
