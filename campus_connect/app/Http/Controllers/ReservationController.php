@@ -60,15 +60,15 @@ class ReservationController extends Controller
     }
 
     public function valider (Reservation $reservation) {
-        $reservation->statut = 'validée' ;
+        $reservation->statut = 'valide' ;
         $reservation->update() ;
-        return redirect()->route('index') ;
+        return back()->with('success', 'La réservation a été validée.');
     }
 
     public function rejeter (Reservation $reservation) {
-        $reservation->statut = 'rejetée' ;
+        $reservation->statut = 'rejete' ;
         $reservation->update() ;
-        return redirect()->route('index') ;
+        return back()->with('success', 'La réservation a été rejetée.');
     }
 
     public function supprimer (Reservation $reservation) {
@@ -87,7 +87,12 @@ class ReservationController extends Controller
         return view('reservations.show', compact('reservation'));
     }
 
-
-
+    /**
+     * Récupère les réservations en attente avec leurs relations.
+     */
+    public static function getPendingReservations()
+    {
+        return Reservation::with('user', 'salle', 'equipement')->where('statut', 'en_attente')->latest()->get();
+    }
 
 }

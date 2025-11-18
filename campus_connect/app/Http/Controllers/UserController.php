@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\UsersImport;
+use App\Exports\UsersTemplateExport;
 use App\Models\User;
 use App\Models\Role;
 use Illuminate\Http\Request;
@@ -10,6 +12,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\Support\Str;
 use App\Mail\WelcomeTeacherMail;
+use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\Validators\ValidationException;
 
 class UserController extends Controller
 {
@@ -46,8 +50,9 @@ class UserController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => ['nullable', 'confirmed', Rules\Password::defaults()], // Le mot de passe est optionnel
+            'password' => ['required', 'confirmed', Rules\Password::defaults()], // Le mot de passe est optionnel
             'role_id' => 'required|exists:roles,id',
+
         ]);
  
         // On vérifie si le rôle est 'enseignant' (ID = 2)
@@ -107,7 +112,7 @@ class UserController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-            'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'role_id' => 'required|exists:roles,id',
         ]);
 
@@ -135,6 +140,48 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $user->delete(); 
         return redirect()->route('users.index')->with('success', 'Utilisateur supprimé avec succès.');
+    }
+
+    /**
+     * Télécharge un modèle Excel pour la création en masse d'enseignants.
+     *
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    public function downloadTemplate()
+    {
+        return Excel::download(new UsersTemplateExport, 'template_enseignants.xlsx');
+    }
+
+    /**
+     * Importe des utilisateurs depuis un fichier Excel.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls',
+        ]);
+
+        try {
+            Excel::import(new UsersImport, $request->file('file'));
+        } catch (ValidationException $e) {
+            $failures = $e->failures();
+            $errorMessages = [];
+
+            foreach ($failures as $failure) {
+                // Construit un message d'erreur détaillé pour chaque échec de validation
+                $errorMessages[] = 'Ligne n°' . $failure->row() . ': ' . implode(', ', $failure->errors()) . ' (valeur fournie : "' . $failure->values()[$failure->attribute()] . '").';
+            }
+
+            // Redirige vers le tableau de bord avec les erreurs spécifiques
+            return redirect()->route('dashboard')
+                             ->with('import_errors', $errorMessages);
+        }
+
+        return redirect()->route('users.index')
+                         ->with('success', 'Les enseignants ont été importés avec succès.');
     }
 }   
     
