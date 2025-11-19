@@ -120,6 +120,8 @@ class AnnonceController extends Controller
         
     }
 
+    //Methode pour voir une  annonce spécifique
+
     public function show (Annonce $annonce) {
         return view('annonces.show' , compact('annonce')) ;
     } 
@@ -143,9 +145,9 @@ class AnnonceController extends Controller
         return redirect()->back()->with('succes' , 'Annonce Supprimée') ;
     }
 
-    //Mise à jours
+    //Affichage du formulaire de mis à jours d'une annonce
     public function edit (Annonce $annonce) {
-        //Recuperation des categories pour en faire une liste de selection dans la vue
+        //Recuperation des categories , des salles , des équipements pour en faire une liste de selection dans la vue
         $categories = Category::all() ;
         $salles = Salle::all() ;
         $equipements = Equipement::all() ;
@@ -153,6 +155,7 @@ class AnnonceController extends Controller
         return view ('annonces.update' , compact('annonce' ,'categories', 'salles', 'equipements'));
     }
 
+    //Application des mises à  jours
     public function update (Request $request , Annonce $annonce) {
 
         $annonce->titre = $request->titre ;
@@ -182,7 +185,8 @@ class AnnonceController extends Controller
             PublierAnnoncesJob::dispatch($annonce->id)->delay(Carbon::parse($annonce->date_publication));
 
             //Rediretion
-            return redirect()->back()->with('succes' , "Votre annonce a bien été publiée !") ;
+            return redirect()->back()->with('succes' , "Votre annonce a bien été mise à jour !") ; 
+            
             } catch (Exception $e) {
                 return redirect()->back()->withInput() ;//
             }

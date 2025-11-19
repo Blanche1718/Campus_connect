@@ -17,11 +17,13 @@ class SalleController extends Controller
         return view('salles.index', compact('salles'));
     }
 
+    //Formulaire de creation de salle
     public function create()
     {
         return view('salles.create');
     }
 
+    //stockage
     public function store(Request $request)
     {
 
@@ -72,8 +74,8 @@ class SalleController extends Controller
     {
         return view('salles.edit', compact('salle'));
     }
-// mettre à jour une salle
 
+// mettre à jour une salle
     public function update(Request $request, Salle $salle)
     {
         $data = $request->validate([
@@ -82,6 +84,12 @@ class SalleController extends Controller
             'localisation' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'disponibilite' => 'sometimes|boolean',
+        ], 
+           //tableau pour envoyer les messages d'erreurs en français
+        [
+            'nom.required' => 'Ce champ est requis' , 
+            'nom.max'  => 'Nom de catégorie trop long !' ,
+            'capacite.integer'  => 'Seules les valeurs entières sont autorisées pour ce champs'
         ]);
 
         $data['disponibilite'] = $request->has('disponibilite') ? (bool) $request->input('disponibilite') : $salle->disponibilite;
@@ -90,6 +98,7 @@ class SalleController extends Controller
 
         return redirect()->route('salles.index')->with('success', 'Salle mise à jour');
     }
+
     // supprimer une salle
 
     public function destroy(Salle $salle)
@@ -97,6 +106,7 @@ class SalleController extends Controller
         $salle->delete();
         return redirect()->route('salles.index')->with('success', 'Salle supprimée');
     }
+
     // voir la disponibilité des salles
 
     /**
@@ -132,9 +142,9 @@ class SalleController extends Controller
             }
         }
 
-        // On doit recharger les données nécessaires pour la page d'accueil
+        //Rechargement des données nécessaires pour la page d'accueil
         $annonces = Annonce::with('categorie', 'auteur')->latest()->take(4)->get();
-        $salles = Salle::orderBy('nom')->get(); // <-- On ajoute cette ligne pour récupérer les salles
+        $salles = Salle::orderBy('nom')->get(); // Récupération des salles
 
         return view('welcome', compact('annonces', 'salles', 'salleResultat', 'disponibiliteMessage'));
     }
