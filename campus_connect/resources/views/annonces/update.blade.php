@@ -112,10 +112,11 @@
                 <label><strong>Équipements concernés :</strong></label>
 
                 @php
-                    $selectedEquipements = old('equipements', $annonce->equipements);
+                    
+                    $selectedEquipements = (array) old('equipements', $annonce->equipements ?? []);
                 @endphp
 
-                @foreach ($selectedEquipements as $eq)
+                @forelse ($selectedEquipements as $eq)
                     <div class="input-group mb-2">
                         <select name="equipements[]" class="form-select">
                             <option value="">--Sélectionnez un équipement--</option>
@@ -128,7 +129,18 @@
                         </select>
                         <button type="button" class="btn btn-danger" onclick="this.parentElement.remove()">-</button>
                     </div>
-                @endforeach
+                @empty
+                    {{-- Si aucun équipement n'est sélectionné, on affiche un premier champ vide --}}
+                    <div class="input-group mb-2">
+                        <select name="equipements[]" class="form-select">
+                            <option value="">--Sélectionnez un équipement--</option>
+                            @foreach ($equipements as $equipement)
+                                <option value="{{ $equipement->id }}">{{ $equipement->nom }}</option>
+                            @endforeach
+                        </select>
+                        <button type="button" class="btn btn-danger" onclick="this.parentElement.remove()">-</button>
+                    </div>
+                @endforelse
 
                 @error('equipements.*') <div class="text-danger small">{{ $message }}</div> @enderror
             </div>
