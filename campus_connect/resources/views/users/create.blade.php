@@ -10,7 +10,7 @@
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
 
-                    {{-- Affiche les erreurs de validation s'il y en a --}}
+                    {{-- Affiche les erreurs de validation s'il y en a 
                     @if ($errors->any())
                         <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
                             <div class="font-bold">{{ __('Oups! Une erreur est survenue.') }}</div>
@@ -21,6 +21,7 @@
                             </ul>
                         </div>
                     @endif
+                    --}}
 
                     <form method="POST" action="{{ route('users.store') }}">
                         @csrf
@@ -28,7 +29,8 @@
                         <!-- Nom -->
                         <div>
                             <label for="name" class="block font-medium text-sm text-gray-700 dark:text-gray-300">{{ __('Nom') }}</label>
-                            <input id="name" class="block mt-1 w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm" type="text" name="name" value="{{ old('name') }}" required autofocus autocomplete="name" />
+                            <input id="name" class=" @error('name') is-invalid @enderror block mt-1 w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm" type="text" name="name" value="{{ old('name') }}" required autofocus autocomplete="name" />
+                             @error('name') <p class="text-red-600 text-sm mt-1">{{ $message }}</p> @enderror
                         </div>
 
                         <!-- Adresse Email -->
@@ -53,13 +55,17 @@
                         <!-- Mot de passe -->
                         <div class="mt-4">
                             <label for="password" class="block font-medium text-sm text-gray-700 dark:text-gray-300">{{ __('Mot de passe') }}</label>
-                            <input id="password" class="block mt-1 w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm" type="password" name="password" required autocomplete="new-password" />
+                            <input id="password" class=" @error('password') is-invalid @enderror block mt-1 w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm" type="password" name="password" required autocomplete="new-password" />
+                             @error('password') <p class="text-red-600 text-sm mt-1">{{ $message }}</p> @enderror
+                            
                         </div>
 
                         <!-- Confirmer le mot de passe -->
                         <div class="mt-4">
                             <label for="password_confirmation" class="block font-medium text-sm text-gray-700 dark:text-gray-300">{{ __('Confirmer le mot de passe') }}</label>
-                            <input id="password_confirmation" class="block mt-1 w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm" type="password" name="password_confirmation" required autocomplete="new-password" />
+                            <input id="password_confirmation" class=" @error('password_confirmation') is-invalid @enderror block mt-1 w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm" type="password" name="password_confirmation" required autocomplete="new-password" />
+                             @error('password_confirmation') <p class="text-red-600 text-sm mt-1">{{ $message }}</p> @enderror
+                    
                         </div>
 
                         <div class="flex items-center justify-end mt-6">

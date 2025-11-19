@@ -93,7 +93,7 @@ Route:: get('/enseignants/{id}/annonces', function ($id) {
 })->middleware('auth')->name('enseignants.annonces');
 
 
-// Routes pour les Annonces (plus propre avec Route::resource)
+// Routes pour les Annonces 
 Route::resource('annonces', AnnonceController::class)->middleware('auth');
 // On restreint les routes de création/modification aux admins et enseignants
 Route::resource('annonces', AnnonceController::class)

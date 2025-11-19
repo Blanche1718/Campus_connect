@@ -32,9 +32,17 @@ class ReservationController extends Controller
             'date_debut' => 'required|date|after_or_equal:now',
             'date_fin' => 'required|date|after:date_debut',
             'motif' => 'nullable|string|max:255',
-        ]);
+        ] , [
+            'salle_id.required' => "Veuillez sélectionner une salle pour la réservation" ,
+            'salle_id.exists' => "Salle inexistante !" ,
+            'equipement_id.exists' => "Equipement inexistant !" ,
+            'date_debut.required' => "Veuillez entrer une date" ,
+            'date_debut.after_or_equal' => "La date de debut ne doit pas être antérieure à la date d'aujourd'hui" ,
+            'date_fin.required' => "Veuillez entrer une date" ,
+            'date_fin.after_or_equal' => "La date de debut ne doit pas être antérieure à la date de debut" ,
+            ]);
 
-        // Vérifie les chevauchements de réservation
+        // Vérifier les chevauchements de réservation
         $existe = Reservation::where('salle_id', $request->salle_id)
             ->where(function ($query) use ($request) {
                 $query->whereBetween('date_debut', [$request->date_debut, $request->date_fin])
@@ -59,22 +67,26 @@ class ReservationController extends Controller
         return redirect()->route('dashboard')->with('success', 'Réservation créée avec succès !');
     }
 
+    //Validation des réservatrionr (par l'admin)
     public function valider (Reservation $reservation) {
         $reservation->statut = 'valide' ;
         $reservation->update() ;
         return back()->with('success', 'La réservation a été validée.');
     }
 
+    //Rejet des reservations (Admin)
     public function rejeter (Reservation $reservation) {
         $reservation->statut = 'rejete' ;
         $reservation->update() ;
         return back()->with('success', 'La réservation a été rejetée.');
     }
 
+    //Suppression des réservations ( Admin)
     public function supprimer (Reservation $reservation) {
         $reservation->delete() ;
         return redirect()->route('index') ;
     }
+
     // recupérer les réservations d'un utilisateur donné
     public function reservationsParEnseignant($userId){
 
@@ -82,6 +94,7 @@ class ReservationController extends Controller
 
         }
 
+    //Voir une réservation
     public function show(Reservation $reservation)
     {
         return view('reservations.show', compact('reservation'));
