@@ -117,35 +117,36 @@ class SalleController extends Controller
      */
     public function verifierDisponibilite(Request $request)
     {
-        $searchTerm = $request->input('salle_search');
-        $salleResultat = null;
-        $disponibiliteMessage = '';
+        
+        $request->validate([
+            'salle_search' => 'required|string',
+        ]);
 
-        if ($searchTerm) {
-            $salleResultat = Salle::where('nom', 'LIKE', "%{$searchTerm}%")->first();
+        $nomSalle = $request->input('salle_search');
+        $salle = Salle::where('nom', $nomSalle)->first();
 
-            if ($salleResultat) {
-                // Vérifier s'il y a une réservation en cours pour cette salle
-                $reservationEnCours = Reservation::where('salle_id', $salleResultat->id)
-                    ->where('statut', 'valide') // On ne compte que les réservations validées
-                    ->where('date_debut', '<=', now())
-                    ->where('date_fin', '>=', now())
-                    ->exists();
-
-                if ($reservationEnCours) {
-                    $disponibiliteMessage = "La salle '{$salleResultat->nom}' est actuellement occupée.";
-                } else {
-                    $disponibiliteMessage = "Bonne nouvelle ! La salle '{$salleResultat->nom}' est actuellement libre.";
-                }
-            } else {
-                $disponibiliteMessage = "Désolé, aucune salle correspondant à '{$searchTerm}' n'a été trouvée.";
-            }
+        if (!$salle) {
+            return redirect()->route('welcome')
+                ->with('status_salle', "Désolé, la salle '{$nomSalle}' n'a pas été trouvée.")
+                ->with('status_type', 'error');
         }
 
-        //Rechargement des données nécessaires pour la page d'accueil
-        $annonces = Annonce::with('categorie', 'auteur')->latest()->take(4)->get();
-        $salles = Salle::orderBy('nom')->get(); // Récupération des salles
+        // Vérifier s'il y a une réservation en cours pour cette salle
+        $reservationEnCours = Reservation::where('salle_id', $salle->id)
+            ->where('statut', 'valide') // On ne compte que les réservations validées
+            ->where('date_debut', '<=', now())
+            ->where('date_fin', '>=', now())
+            ->exists();
 
-        return view('welcome', compact('annonces', 'salles', 'salleResultat', 'disponibiliteMessage'));
+        if ($reservationEnCours) {
+            return redirect()->route('welcome')
+                ->with('status_salle', "La salle '{$salle->nom}' est actuellement occupée.")
+                ->with('status_type', 'error');
+        }
+
+        // Si on arrive ici, la salle existe et n'a pas de réservation en cours
+        return redirect()->route('welcome')
+            ->with('status_salle', "Bonne nouvelle ! La salle '{$salle->nom}' est actuellement libre.")
+            ->with('status_type', 'success');
     }
 }
