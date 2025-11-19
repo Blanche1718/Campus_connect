@@ -29,16 +29,16 @@ class UserSeeder extends Seeder
                 'role_id' => 2, // enseignant
             ],
             [
-                'name' => 'Étudiant Diallo',
+                'name' => 'Professeur Martion',
                 'email' => 'diallo@campusconnect.com',
-                'password' => Hash::make('etudiant123'),
-                'role_id' => 3, // étudiant
+                'password' => Hash::make('prof123'),
+                'role_id' => 2, // étudiant
             ],
             [
                 'name' => 'Marie Curie',
                 'email' => 'curie@campusconnect.com',
-                'password' => Hash::make('etudiant456'),
-                'role_id' => 3, // étudiant
+                'password' => Hash::make('marie456'),
+                'role_id' => 2, // étudiant
             ],
         ];
 
