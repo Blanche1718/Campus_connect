@@ -25,6 +25,7 @@ class AnnonceController extends Controller
         $auteurs = User::orderBy('name')->get();
         // On construit la requête pour les annonces
         $annoncesQuery = Annonce::with(['auteur', 'categorie', 'salle']) // Eager loading
+                                ->where('statut', 'publiee')
                                 ->orderBy('date_publication', 'desc');
 
         // On applique le filtre si une catégorie est demandée
