@@ -12,12 +12,16 @@ class EquipementController extends Controller
         $equipements = Equipement::latest()->paginate(15);
         return view('equipements.index', compact('equipements'));
     }
+
+
     // fonction create pour afficher le formulaire de création d'un équipement
 
     public function create()
     {
         return view('equipements.create');
     }
+
+
 // fonction store pour enregistrer un équipement
     public function store(Request $request)
     {
@@ -27,6 +31,8 @@ class EquipementController extends Controller
             'etat' => 'nullable|string|max:100',
             'description' => 'nullable|string',
             'disponibilite' => 'sometimes|boolean',
+        ] , [
+            'nom.required' =>"Entrez le nom de l'équipement " ,
         ]);
 
         $data['disponibilite'] = $request->has('disponibilite') ? (bool) $request->input('disponibilite') : true;
@@ -49,6 +55,8 @@ class EquipementController extends Controller
             'etat' => 'nullable|string|max:100',
             'description' => 'nullable|string',
             'disponibilite' => 'sometimes|boolean',
+        ] , [
+            'nom.required' =>"Entrez le nom de l'équipement " ,
         ]);
 
         $data['disponibilite'] = $request->has('disponibilite') ? (bool) $request->input('disponibilite') : $equipement->disponibilite;
@@ -57,7 +65,7 @@ class EquipementController extends Controller
 
         return redirect()->route('equipements.index')->with('success', 'Équipement mis à jour');
     }
-// fonction destroy
+// Suppression d'équipement
     public function destroy(Equipement $equipement)
     {
         $equipement->delete();

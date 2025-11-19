@@ -171,11 +171,25 @@
     <main class="container py-5" id="annonces">
         <h2 class="section-title text-center mb-4">Dernières Annonces</h2>
         <div class="row g-4">
-            @forelse ($annonces as $annonce)
+
+            @php
+                $colors = [
+                    'bg-primary text-white' , 
+                    'bg-secondary text-white' , 
+                    'bg-success text-white' , 
+                    'bg-danger text-white' ,
+                    'bg-warning text-dark' , 
+                    'bg-info  text-dark' ,
+                    'bg-dark text-white' ,
+                    'bg-light text-dark'
+                ] ;
+            @endphp
+
+            @forelse ($annonces as $i => $annonce)
             <div class="col-lg-3 col-md-6">
                 <div class="card annonce-card h-100">
                     <div class="card-body d-flex flex-column">
-                        <span class="badge-category">{{ $annonce->categorie->nom ?? 'Non classé' }}</span>
+                        <span class="badge-category {{$colors[$i%count($colors)]}}">{{ $annonce->categorie->nom ?? 'Non classé' }}</span>
                         <h5 class="card-title">{{ $annonce->titre }}</h5>
                         <p class="card-text">{{ Str::limit($annonce->contenu, 80) }}</p>
                         <a href="{{ route('annonces.show', $annonce->id) }}" class="btn btn-outline-primary mt-auto">Voir plus</a>

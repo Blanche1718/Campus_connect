@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\Role;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -45,7 +47,7 @@ class ProfileController extends Controller
     }
 
     /**
-     * Display the user's profile form.
+     * Afficher le formulaire du profil utilisateur
      */
     public function edit(Request $request): View
     {
@@ -55,7 +57,7 @@ class ProfileController extends Controller
     }
 
     /**
-     * Update the user's profile information.
+     * Mise à jours des infrmations de profil 
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
