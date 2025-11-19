@@ -41,7 +41,7 @@
                                     @foreach ($salles as $salle)
                                         <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/40 transition">
                                             <td class="px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
-                                                {{ $salle->id }}
+                                                {{ ($salles->currentPage() - 1) * $salles->perPage() + $loop->iteration }}
                                             </td>
 
                                             <td class="px-6 py-4 text-sm text-gray-800 dark:text-gray-200 font-medium">
