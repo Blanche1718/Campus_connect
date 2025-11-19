@@ -9,19 +9,23 @@ class CategorieController extends Controller
 {
     public function index()
     {
+
         $categories = Category::orderBy('nom')->paginate(20);
         return view('categories.index', compact('categories'));
     }
 
+
+    //Affichage du formulaire de création des catégories
     public function create()
     {
         return view('categories.create');
     }
 
+    //Stockage des catégories 
     public function store(Request $request)
     {
 
-        //recuperation du nom de catégorie entré par l'utilisateur
+        //recuperation et conversion en minuscules du nom de catégorie entré par l'utilisateur 
         $nom_categorie = strtolower(trim($request->nom));
 
         //Suppresion des espaces entre les mots ou caractères
@@ -47,11 +51,14 @@ class CategorieController extends Controller
         return redirect()->route('categories.index')->with('success', 'Catégorie créée');
     }
 
+
+    //Formulaire d'édition de catégorie
     public function edit(Category $category)
     {
         return view('categories.edit', compact('category'));
     }
 
+    //Aplication de la mise à jour
     public function update(Request $request, Category $category)
     {
         $data = $request->validate([
@@ -63,6 +70,8 @@ class CategorieController extends Controller
         return redirect()->route('categories.index')->with('success', 'Catégorie mise à jour');
     }
 
+
+    //Suppresion de catégorie
     public function destroy(Category $category)
     {
         $category->delete();
