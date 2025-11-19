@@ -112,8 +112,7 @@
                 <label><strong>Équipements concernés :</strong></label>
 
                 @php
-                    // On s'assure que $selectedEquipements est toujours un tableau.
-                    // (array) convertit null ou une chaîne en un tableau (potentiellement vide).
+                    
                     $selectedEquipements = (array) old('equipements', $annonce->equipements ?? []);
                 @endphp
 
