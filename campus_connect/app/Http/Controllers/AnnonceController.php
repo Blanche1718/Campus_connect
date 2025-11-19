@@ -114,7 +114,7 @@ class AnnonceController extends Controller
             PublierAnnoncesJob::dispatch($annonce->id)->delay(Carbon::parse($annonce->date_publication));
 
             //Rediretion
-            return redirect()->back()->with('succes' , "Votre annonce a bien été publiée !") ;
+            return redirect()->back()->with('succes' , "Votre annonce a bien été enregistrée !") ;
             } catch (Exception $e) {
                 return redirect()->back()->withInput() ;//
             }

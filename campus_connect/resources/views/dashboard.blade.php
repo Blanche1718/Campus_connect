@@ -8,6 +8,14 @@
     <div class="py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
+            <!-- Bloc pour afficher les messages de succès -->
+            <!-- @if (session('success'))
+                <div class="mb-6 p-4 bg-green-100 dark:bg-green-900/40 border border-green-300 dark:border-green-700 rounded-lg shadow text-green-800 dark:text-green-200">
+                    {{ session('success') }}
+                </div>
+            @endif -->
+            <!-- Fin du bloc de succès -->
+
             <!-- Bloc pour afficher les erreurs d'importation -->
             @if (session('import_errors'))
                 <div

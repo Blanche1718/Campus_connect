@@ -64,7 +64,7 @@ class ReservationController extends Controller
             'statut' => 'en_attente',
         ]);
 
-        return redirect()->route('dashboard')->with('success', 'Réservation créée avec succès !');
+        return redirect()->back()->with('success', 'Réservation créée avec succès !');
     }
 
     //Validation des réservatrionr (par l'admin)

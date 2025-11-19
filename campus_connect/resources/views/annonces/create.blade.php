@@ -76,6 +76,14 @@
         @csrf
 
         <h1 class="text-center mb-4" style="color: var(--primary-color);">Créer une annonce 📝</h1>
+
+        <!-- Bloc pour afficher les messages de succès -->
+        @if (session('succes'))
+            <div class="alert alert-success" role="alert">
+                {{ session('succes') }}
+            </div>
+        @endif
+
         <div class="container d-flex flex-column justify-content-center modern-card gap-3" style="max-width: 650px;">
             
             <div>

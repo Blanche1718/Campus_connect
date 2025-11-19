@@ -78,8 +78,14 @@
         @csrf
 
         <h1 class="text-center mb-4" style="color: var(--primary-color);">Faire une réservation 📝</h1>
+        
         <div class="container d-flex flex-column justify-content-center modern-card gap-3" style="max-width: 650px;">
-
+             <!-- Bloc pour afficher les messages de succès -->
+        @if (session('success'))
+            <div class="alert alert-success" role="alert">
+                {{ session('success') }}
+            </div>
+        @endif
             <div>
                 <label for="salle_id"><strong>Sélectionnez une salle: </strong></label>
                 <select name="salle_id" class="form-select @error('salle_id') is-invalid @enderror">
