@@ -158,7 +158,7 @@
 
     <!-- Quick Access -->
     <section class="quick-access">
-        <a href="#annonces" class="quick-access-item"><i class="bi bi-bell"></i> Annonces</a>
+        <a href="{{ Route::has('annonces.index') ? route('annonces.index') : route('login') }}" class="quick-access-item"><i class="bi bi-bell"></i> Voir les Annonces</a>
         <a href="#salle-search" class="quick-access-item"><i class="bi bi-door-open"></i> Disponibilité d’une salle</a>
         <a href="#annonces" class="quick-access-item"><i class="bi bi-newspaper"></i> Actualités</a>
         <a href="#contacts" class="quick-access-item"><i class="bi bi-people"></i> Contacts</a>
