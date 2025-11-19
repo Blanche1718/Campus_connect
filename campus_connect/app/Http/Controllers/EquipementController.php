@@ -30,12 +30,18 @@ class EquipementController extends Controller
             'categorie' => 'nullable|string|max:150',
             'etat' => 'nullable|string|max:100',
             'description' => 'nullable|string',
-            'disponibilite' => 'sometimes|boolean',
+            'disponibilite' => 'sometimes', 
         ] , [
             'nom.required' =>"Entrez le nom de l'équipement " ,
         ]);
 
-        $data['disponibilite'] = $request->has('disponibilite') ? (bool) $request->input('disponibilite') : true;
+        // Le chexcbox envoie 'on' ou 'off' au lieu de 'true' ou 'false'. C'est pourquoi y a ceci
+        if($request->disponibilite === 'on') {
+            $data['disponibilite'] = 1;
+        }else {
+            $data['disponibilite'] = 0;
+        }
+       // $data['disponibilite'] = $request->disponibilite ; //? (bool) $request->input('disponibilite') : true;
 
         Equipement::create($data);
 
