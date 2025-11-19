@@ -44,7 +44,13 @@ class ReservationSeeder extends Seeder
         ];
 
         foreach ($reservations as $res) {
-            Reservation::updateOrCreate(['user_id' => $res['user_id'], 'date_debut' => $res['date_debut']], $res);
+            // On utilise le 'motif' comme clé unique pour éviter les duplications.
+            // Si une réservation avec ce motif existe, elle sera mise à jour avec les nouvelles données (y compris les dates).
+            // Sinon, elle sera créée.
+            Reservation::updateOrCreate(
+                ['motif' => $res['motif']], // Clé de recherche stable
+                $res                       // Données à insérer ou à mettre à jour
+            );
         }
     }
 }

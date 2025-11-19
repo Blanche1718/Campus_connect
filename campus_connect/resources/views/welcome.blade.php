@@ -104,7 +104,6 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-lg-center">
                     <li class="nav-item"><a class="nav-link active" href="#">Accueil</a></li>
-                    <!-- Quand on est pas connecté et on clique sur annonces; on doit etre redigirer vers la page de login sinon on est redirigé vers d'affiche de toutes les annonces -->
                     <li>@if(Route::has('annonces.index'))
                         <a class="nav-link" href="{{ route('annonces.index') }}">Annonces</a>
                     @else
@@ -159,7 +158,6 @@
 
     <!-- Quick Access -->
     <section class="quick-access">
-        <!-- Quand on est pas connecté et on clique sur annonces; on doit etre redigirer vers la page de login sinon on est redirigé vers d'affiche de toutes les annonces -->
         <a href="{{ Route::has('annonces.index') ? route('annonces.index') : route('login') }}" class="quick-access-item"><i class="bi bi-bell"></i> Voir les Annonces</a>
         <a href="#salle-search" class="quick-access-item"><i class="bi bi-door-open"></i> Disponibilité d’une salle</a>
         <a href="#annonces" class="quick-access-item"><i class="bi bi-newspaper"></i> Actualités</a>
