@@ -93,6 +93,14 @@
         </style>
     </head>
     <body>
+        {{-- Bloc pour afficher le message de succes --}}
+        @if (session('succes'))
+            <div class="alert alert-success alert-dismissible fade show my-3 mx-auto" role="alert" style="max-width: 500px; animation: fadeInUp 0.5s ease forwards;">
+                {{ session('succes') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+        {{-- Fin du bloc de message --}}
         <div class="container py-5">
             <header class="text-center mb-5">
                 <h1 class="display-4 fw-bold" style="color: var(--primary-color);">Le Mur d'Annonces</h1>
@@ -189,6 +197,20 @@
 
             </form>
         </div>
+
+        @if (auth()->user()->role->nom == 'enseignant')
+            <div class="d-flex justify-content-end m-3">
+                <a href="{{route('dashboard.enseignant')}}" class="btn btn-primary"> Mes favoris</a>
+            </div>   
+        @endif
+
+        @if (auth()->user()->role->nom == 'etudiant')
+            <div class="d-flex justify-content-end m-3">
+                <a href="{{route('dashboard.etudiant')}}" class="btn btn-primary"> Mes favoris</a>
+            </div>  
+        @endif 
+
+      
             <!-- Liste des Annonces -->
             <div class="row gy-5">
                 @forelse ($annonces as $annonce)
@@ -255,9 +277,39 @@
                                         </div>
                                     @endif
                                 </div>
+                                
                             </footer>
-                        </article>
-                    </div>
+                            
+                            <div class="bg-white w-25 d-flex gap-2 m-3" >
+                               <button onclick="react({{ $annonce->id }}, 'like')" class="btn btn-light" title="J'aime">
+                                    <i class="h4 bi bi-hand-thumbs-up-fill text-primary"></i>
+                                    <span class="h5" id="like-count-{{ $annonce->id }}">{{ $annonce->likes()->count() }}</span>
+                                </button>
+
+                                <button onclick="react({{ $annonce->id }}, 'dislike')" class="btn btn-light" title="J'aime pas">
+                                    <i class="h4 bi bi-hand-thumbs-down-fill text-danger"></i>
+                                    <span class="h5" id="dislike-count-{{ $annonce->id }}">{{ $annonce->dislikes()->count() }}</span>
+                                </button>
+
+                            @php
+                                $isFavorited = $annonce->isFavoritedBy(auth()->id());
+                                $btnText = $isFavorited ? "Retirer des favoris" : "Ajouter aux favoris";
+                            @endphp
+
+                            <button onclick="toggleFavorite({{ $annonce->id }})" class="btn btn-light d-flex align-items-center gap-2">
+
+                                <i id="fav-icon-{{ $annonce->id }}"
+                                class="bi {{ $isFavorited ? 'bi-star-fill text-warning' : 'bi-star' }}">
+                                </i>
+
+                                <span id="fav-text-{{ $annonce->id }}">
+                                    {{ $btnText }}
+                                </span>
+
+                            </button>
+                        </div>
+                    </article>
+                </div>
                 @empty
                     <div class="col-12">
                         <div class="text-center py-5 bg-white rounded-3 shadow-sm">
@@ -275,6 +327,63 @@
                 @endforelse
             </div>
         </div>
-    </body>
-    </html>
+        
+<script>
+function react(annonceId, type) {
+    fetch(`/annonces/${annonceId}/react`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": "{{ csrf_token() }}"
+        },
+        body: JSON.stringify({ type })
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Mise à jour dynamique
+        document.getElementById(`like-count-${annonceId}`).textContent = data.likes;
+        document.getElementById(`dislike-count-${annonceId}`).textContent = data.dislikes;
+    })
+    .catch(err => console.error(err));
+}
+
+function toggleFavorite(annonceId) {
+    fetch(`/annonces/${annonceId}/favorite`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": "{{ csrf_token() }}"
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        let icon = document.getElementById(`fav-icon-${annonceId}`);
+        let btnText = document.getElementById(`fav-text-${annonceId}`);
+
+        if (data.favorited) {
+            // Icône
+            icon.classList.remove("bi-star");
+            icon.classList.add("bi-star-fill", "text-warning");
+
+            // Texte
+            btnText.innerText = "Retirer des favoris";
+
+        } else {
+            // Icône
+            icon.classList.remove("bi-star-fill", "text-warning");
+            icon.classList.add("bi-star");
+
+            // Texte
+            btnText.innerText = "Ajouter aux favoris";
+        }
+    });
+}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
 </x-app-layout>
+
+
