@@ -16,8 +16,7 @@ use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\SalleController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\EnsurePasswordIsChanged;
-
-
+use App\Models\Favori;
 
 Route::post('/login', [LoginController::class, 'login'])->name('login');
 
@@ -57,8 +56,18 @@ Route::get('/dash_enseignant', function () {
     ];
     $annonces = Annonce::with(['categorie'])->where('auteur_id', $user->id)->get();
     $reservations = Reservation::with(['salle', 'equipement'])->where('user_id', $user->id)->get();
-    return view('dash_enseignant', compact('stats', 'annonces', 'reservations'));
+    $favoriteAnnonces = $user->favoriteAnnonces()->get();
+    return view('dash_enseignant', compact('stats', 'annonces', 'reservations' , 'favoriteAnnonces'));
 })->middleware(['auth', 'role:enseignant', EnsurePasswordIsChanged::class])->name('dashboard.enseignant');
+
+
+// Dashboard etudiant
+Route::get('/dash_etudiant', function () {
+    $user = auth()->user() ;
+    $favoriteAnnonces = $user->favoriteAnnonces()->get();
+    //dd(count($favoris));
+    return view('dash_etudiant' , compact('favoriteAnnonces'));
+})->middleware(['auth', 'role:etudiant'])->name('dashboard.etudiant');
 
 // Routes pour le profil utilisateur
 Route::middleware('auth')->group(function () {
@@ -75,6 +84,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::resource('categories', CategorieController::class)->except(['show']);
     Route::resource('salles', SalleController::class)->except(['show']);
     Route::resource('equipements', EquipementController::class)->except(['show']);
+    Route::patch ('users/{user}/nommeradmin' , [UserController::class ,'nommeradmin' ])->name('users.nommeradmin') ;
 });
 
 Route:: get('/enseignants/{id}/annonces', function ($id) {
@@ -109,7 +119,16 @@ Route::middleware('auth' , 'role:admin,enseignant')->prefix('reservations')->nam
     Route::post('/', [ReservationController::class, 'store'])->name('store');
     Route::get('/{reservation}', [ReservationController::class, 'show'])->name('show');
     Route::delete('/{reservation}', [ReservationController::class, 'supprimer'])->name('destroy');
-
-
    
 });
+
+//Route poour la gestion des likes
+Route::post('/annonces/{annonce}/react', [AnnonceController::class, 'react'])
+    ->middleware('auth')
+    ->name('annonces.react');
+
+//Route poour la gestion des favoris
+Route::post('/annonces/{annonce}/favorite', [AnnonceController::class, 'toggleFavorite'])
+    ->middleware('auth')
+    ->name('annonces.favorite');
+
