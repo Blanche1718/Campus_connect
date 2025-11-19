@@ -15,9 +15,33 @@
                     <x-nav-link :href="route('welcome')" :active="request()->routeIs('welcome')">
                         {{ __('Accueil') }}
                     </x-nav-link>
+                    @auth
+                        @if (Auth::user()->role_id == 1) {{-- Admin --}}
+                            <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                                {{ __('Tableau de bord') }}
+                            </x-nav-link>
+                        @elseif (Auth::user()->role_id == 2) {{-- Enseignant --}}
+                            <x-nav-link :href="route('dashboard.enseignant')" :active="request()->routeIs('dashboard.enseignant')">
+                                {{ __('Tableau de bord') }}
+                            </x-nav-link>
+                        
+                        @endif
+                    @endauth
                 </div> 
                
             </div>
+            <!-- Lien pour rediriger vers le Tableau de bord de l'enseignant si c'est un enseignant et de l'admin si c'est un admin -->
+            <!-- <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                @if (Auth::user() && Auth::user()->role === 'enseignant')
+                    <x-nav-link :href="route('dashboard.enseignant')" :active="request()->routeIs('dashboard.enseignant')">
+                        {{ __('Tableau de bord') }}
+                    </x-nav-link>
+                @elseif (Auth::user() && Auth::user()->role === 'admin')
+                    <x-nav-link :href="route('dashboard.admin')" :active="request()->routeIs('dashboard.admin')">
+                        {{ __('Tableau de bord') }}
+                    </x-nav-link>
+                @endif
+            </div> -->
 
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
