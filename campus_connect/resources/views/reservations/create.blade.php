@@ -86,6 +86,13 @@
                 {{ session('success') }}
             </div>
         @endif
+
+        <!-- Bloc pour afficher les messages d'erreur -->
+        @if (session('error'))
+            <div class="alert alert-danger" role="alert">
+                {{ session('error') }}
+            </div>
+        @endif
             <div>
                 <label for="salle_id"><strong>Sélectionnez une salle: </strong></label>
                 <select name="salle_id" class="form-select @error('salle_id') is-invalid @enderror">
