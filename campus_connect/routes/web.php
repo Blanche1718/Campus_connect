@@ -56,17 +56,15 @@ Route::get('/dash_enseignant', function () {
     ];
     $annonces = Annonce::with(['categorie'])->where('auteur_id', $user->id)->get();
     $reservations = Reservation::with(['salle', 'equipement'])->where('user_id', $user->id)->get();
-    $favoriteAnnonces = $user->favoriteAnnonces()->get();
-    return view('dash_enseignant', compact('stats', 'annonces', 'reservations' , 'favoriteAnnonces'));
+    return view('dash_enseignant', compact('stats', 'annonces', 'reservations'));
 })->middleware(['auth', 'role:enseignant', EnsurePasswordIsChanged::class])->name('dashboard.enseignant');
 
 
 // Dashboard etudiant
 Route::get('/dash_etudiant', function () {
     $user = auth()->user() ;
-    $favoriteAnnonces = $user->favoriteAnnonces()->get();
     //dd(count($favoris));
-    return view('dash_etudiant' , compact('favoriteAnnonces'));
+    return view('dash_etudiant' );
 })->middleware(['auth', 'role:etudiant'])->name('dashboard.etudiant');
 
 // Routes pour le profil utilisateur
@@ -128,7 +126,7 @@ Route::post('/annonces/{annonce}/react', [AnnonceController::class, 'react'])
     ->name('annonces.react');
 
 //Route poour la gestion des favoris
-Route::post('/annonces/{annonce}/favorite', [AnnonceController::class, 'toggleFavorite'])
-    ->middleware('auth')
-    ->name('annonces.favorite');
+// Route::post('/annonces/{annonce}/favorite', [AnnonceController::class, 'toggleFavorite'])
+//     ->middleware('auth')
+//     ->name('annonces.favorite');
 
