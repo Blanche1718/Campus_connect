@@ -104,7 +104,12 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-lg-center">
                     <li class="nav-item"><a class="nav-link active" href="#">Accueil</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#annonces">Annonces</a></li>
+                    <li>@if(Route::has('annonces.index'))
+                        <a class="nav-link" href="{{ route('annonces.index') }}">Annonces</a>
+                    @else
+                        <a class="nav-link" href="{{ route('login') }}">Annonces</a>
+                    @endif
+                    </li>
                     <li class="nav-item"><a class="nav-link" href="#annonces">Actualités</a></li>
                     <li class="nav-item"><a class="nav-link" href="#contacts">Contact</a></li>
                 </ul>
@@ -155,7 +160,7 @@
     <section class="quick-access">
         <a href="#annonces" class="quick-access-item"><i class="bi bi-bell"></i> Annonces</a>
         <a href="#salle-search" class="quick-access-item"><i class="bi bi-door-open"></i> Disponibilité d’une salle</a>
-        <a href="#actualites" class="quick-access-item"><i class="bi bi-newspaper"></i> Actualités</a>
+        <a href="#annonces" class="quick-access-item"><i class="bi bi-newspaper"></i> Actualités</a>
         <a href="#contacts" class="quick-access-item"><i class="bi bi-people"></i> Contacts</a>
         
     </section>
