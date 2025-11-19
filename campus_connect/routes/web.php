@@ -24,7 +24,7 @@ require __DIR__.'/auth.php';
 
 
 Route::get('/', function () {
-    $annonces = Annonce::with('categorie', 'auteur')->latest()->take(8)->get();
+    $annonces = Annonce::with('categorie', 'auteur')->latest()->take(4)->get();
     $salles = Salle::orderBy('nom')->get();
     return view('welcome', compact('annonces', 'salles'));
 })->name('welcome');
