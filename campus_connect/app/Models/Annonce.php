@@ -16,17 +16,18 @@ class Annonce extends Model
     protected $fillable = [
         'titre',
         'contenu',
+        'statut',
         'categorie_id',
         'auteur_id',
         'date_publication',
         'date_evenement',
         'salle_id',
-        'equipements', // On ajoute la nouvelle colonne
+        'equipements',
     ];
     protected $casts = [
         'equipements' => 'array',
-        'date_publication' => 'datetime', // Doit correspondre au type de la BDD (dateTime)
-        'date_evenement' => 'date',
+        'date_publication' => 'datetime',
+        'date_evenement' => 'datetime',
     ];
 
     
@@ -44,7 +45,6 @@ class Annonce extends Model
     {
         return $this->belongsTo(Salle::class, 'salle_id');
     }
-    
 
     /**
      * Récupère les modèles Equipement basés sur les IDs stockés dans la colonne JSON.
@@ -53,10 +53,12 @@ class Annonce extends Model
      */
     public function getEquipementsDetailsAttribute()
     {
-        if (empty($this->equipements)) {
-            return collect(); // Retourne une collection vide si aucun équipement
+        // Assurez-vous que $this->equipements est un tableau, même si le casting devrait le faire.
+        $equipementIds = $this->equipements;
+        if (is_string($equipementIds)) {
+            $equipementIds = json_decode($equipementIds, true);
         }
-        return Equipement::whereIn('id', $this->equipements)->get();
+        return Equipement::whereIn('id', $equipementIds ?? [])->get();
     }
 
     public function reactions()

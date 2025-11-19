@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: campus-connect-59ms
+    env: docker
+    plan: starter
+    dockerfilePath: ./campus_connect/Dockerfile
+    dockerContext: ./campus_connect
+    envVars:
+      - key: APP_URL
+        value: ${RENDER_EXTERNAL_URL}
+      - fromGroup: campus-connect-db # Assurez-vous que c'est le bon nom de groupe
+    dockerBuildArgs:
+      APP_URL: ${RENDER_EXTERNAL_URL}

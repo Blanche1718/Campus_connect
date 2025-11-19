@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Reservation;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 
@@ -14,7 +13,44 @@ class ReservationSeeder extends Seeder
      */
     public function run(): void
     {
-        // Crée 50 réservations en utilisant la factory
-        Reservation::factory()->count(50)->create();
+        $reservations = [
+            [
+                'user_id' => 2, // Professeur Dupont
+                'salle_id' => 1, // Amphi A
+                'equipement_id' => 1, // Projecteur
+                'date_debut' => now()->addDays(5)->setHour(10),
+                'date_fin' => now()->addDays(5)->setHour(12),
+                'motif' => 'Cours de Droit Constitutionnel',
+                'statut' => 'valide',
+            ],
+            [
+                'user_id' => 3, // Étudiant Diallo
+                'salle_id' => 2, // Salle 101
+                'date_debut' => now()->addDays(7)->setHour(14),
+                'date_fin' => now()->addDays(7)->setHour(16),
+                'motif' => 'Réunion de groupe projet web',
+                'statut' => 'en_attente',
+            ],
+            [
+                'user_id' => 4, // Marie Curie
+                'salle_id' => 3, // Salle 102
+                'equipement_id' => 3, // Tableau blanc interactif
+                'date_debut' => now()->addDays(10)->setHour(9),
+                'date_fin' => now()->addDays(10)->setHour(11),
+                'motif' => 'Atelier de physique expérimentale',
+                'statut' => 'valide',
+            ],
+            
+        ];
+
+        foreach ($reservations as $res) {
+            // On utilise le 'motif' comme clé unique pour éviter les duplications.
+            // Si une réservation avec ce motif existe, elle sera mise à jour avec les nouvelles données (y compris les dates).
+            // Sinon, elle sera créée.
+            Reservation::updateOrCreate(
+                ['motif' => $res['motif']], // Clé de recherche stable
+                $res                       // Données à insérer ou à mettre à jour
+            );
+        }
     }
 }

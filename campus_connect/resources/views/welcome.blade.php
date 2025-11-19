@@ -104,7 +104,12 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-lg-center">
                     <li class="nav-item"><a class="nav-link active" href="#">Accueil</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#annonces">Annonces</a></li>
+                    <li>@if(Route::has('annonces.index'))
+                        <a class="nav-link" href="{{ route('annonces.index') }}">Annonces</a>
+                    @else
+                        <a class="nav-link" href="{{ route('login') }}">Annonces</a>
+                    @endif
+                    </li>
                     <li class="nav-item"><a class="nav-link" href="#annonces">Actualités</a></li>
                     <li class="nav-item"><a class="nav-link" href="#contacts">Contact</a></li>
                 </ul>
@@ -136,6 +141,17 @@
     <header class="hero" id="salle-search">
         <h1>L’Information Universitaire Centralisée</h1>
         <p>Restez connecté à la vie du campus et découvrez les annonces importantes en un clic.</p>
+
+        {{-- Bloc pour afficher les messages de statut de la recherche de salle --}}
+        @if (session('status_salle'))
+            <div class="alert {{ session('status_type') === 'success' ? 'alert-success' : 'alert-danger' }} alert-dismissible fade show my-3" role="alert" style="max-width: 500px; margin: auto; animation: fadeInUp 0.5s ease forwards;">
+                <i class="bi {{ session('status_type') === 'success' ? 'bi-check-circle-fill' : 'bi-exclamation-triangle-fill' }} me-2"></i>
+                {{ session('status_salle') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+        {{-- Fin du bloc de messages --}}
+
         @auth
         <form action="{{ route('salles.verifierDisponibilite') }}" method="GET">
             <input class="form-control" list="sallesOptions" name="salle_search" placeholder="Rechercher une salle..." required>
@@ -153,9 +169,9 @@
 
     <!-- Quick Access -->
     <section class="quick-access">
-        <a href="#annonces" class="quick-access-item"><i class="bi bi-bell"></i> Annonces</a>
+        <a href="{{ Route::has('annonces.index') ? route('annonces.index') : route('login') }}" class="quick-access-item"><i class="bi bi-bell"></i> Voir les Annonces</a>
         <a href="#salle-search" class="quick-access-item"><i class="bi bi-door-open"></i> Disponibilité d’une salle</a>
-        <a href="#actualites" class="quick-access-item"><i class="bi bi-newspaper"></i> Actualités</a>
+        <a href="#annonces" class="quick-access-item"><i class="bi bi-newspaper"></i> Actualités</a>
         <a href="#contacts" class="quick-access-item"><i class="bi bi-people"></i> Contacts</a>
         
     </section>
