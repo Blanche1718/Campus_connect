@@ -84,6 +84,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::resource('categories', CategorieController::class)->except(['show']);
     Route::resource('salles', SalleController::class)->except(['show']);
     Route::resource('equipements', EquipementController::class)->except(['show']);
+    Route::patch ('users/{user}/nommeradmin' , [UserController::class ,'nommeradmin' ])->name('users.nommeradmin') ;
 });
 
 Route:: get('/enseignants/{id}/annonces', function ($id) {
@@ -130,3 +131,4 @@ Route::post('/annonces/{annonce}/react', [AnnonceController::class, 'react'])
 Route::post('/annonces/{annonce}/favorite', [AnnonceController::class, 'toggleFavorite'])
     ->middleware('auth')
     ->name('annonces.favorite');
+

@@ -152,6 +152,14 @@ class UserController extends Controller
         return redirect()->route('users.index')->with('success', 'Utilisateur mis à jour avec succès.');
     }
 
+
+    public function nommeradmin(Request $request , User $user) {
+        $user->role_id = 1 ;
+        $user->update();
+        return redirect()->back();
+    }
+
+
     /**
      * Supprime un utilisateur existant.
      *

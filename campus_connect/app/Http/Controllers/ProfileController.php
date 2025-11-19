@@ -31,7 +31,7 @@ class ProfileController extends Controller
     
     }
 // enregistrer un nouvel utilisateur
-    public function store(ProfileUpdateRequest $request): RedirectResponse
+    public function storeyy(ProfileUpdateRequest $request): RedirectResponse
     {
         validate([
             'name' => 'required|string|max:255',
